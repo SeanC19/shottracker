@@ -114,6 +114,8 @@ const styles = {
     border: '1px solid #d1d5db',
     fontSize: '1rem',
     outline: 'none',
+    color: '#111',
+    backgroundColor: '#fff',
   },
   error: {
     color: '#dc2626',
