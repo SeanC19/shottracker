@@ -249,6 +249,7 @@ const styles = {
   input: {
     padding: '0.5rem 0.65rem', borderRadius: '7px', border: '1px solid #d1d5db',
     fontSize: '0.95rem', flex: 1, minWidth: '120px', outline: 'none', color: '#111',
+    backgroundColor: '#fff',
   },
   saveBtn: {
     padding: '0.5rem 1rem', backgroundColor: '#16a34a', color: '#fff',
