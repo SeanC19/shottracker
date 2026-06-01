@@ -204,7 +204,7 @@ export default function TeamDetail() {
 }
 
 const styles = {
-  container: { minHeight: '100vh', backgroundColor: '#f4f4f5', paddingBottom: '80px' },
+  container: { height: '100vh', backgroundColor: '#f4f4f5', display: 'flex', flexDirection: 'column', overflow: 'hidden' },
   loading: { padding: '2rem', color: '#71717a' },
   header: {
     backgroundColor: '#fff',
@@ -223,7 +223,7 @@ const styles = {
     fontSize: '0.8rem', color: '#2563eb', fontWeight: '600',
     backgroundColor: '#eff6ff', padding: '0.15rem 0.4rem', borderRadius: '5px',
   },
-  content: { maxWidth: '600px', margin: '0 auto', padding: '1.5rem' },
+  content: { maxWidth: '600px', width: '100%', margin: '0 auto', padding: '1.5rem', flex: 1, overflowY: 'auto' },
   tabs: { display: 'flex', gap: '0.5rem', marginBottom: '1.25rem' },
   tab: {
     padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid #e5e7eb',
