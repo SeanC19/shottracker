@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
+import rinkImg from '../assets/rink.png'
 
 const RESULT_COLORS = {
   goal: '#16a34a',
@@ -133,7 +134,7 @@ export default function Report() {
         <h2 style={s.sectionTitle}>Shot Map</h2>
         <div style={s.rinkWrap}>
           <div style={s.rinkContainer}>
-            <RinkSVG />
+            <img src={rinkImg} alt="hockey rink" style={{ width: "100%", display: "block" }} draggable={false} />
             {shots.map(shot => (
               <div
                 key={shot.id}
@@ -202,7 +203,7 @@ export default function Report() {
                   {/* Mini shot map per player */}
                   <div style={s.miniRinkWrap}>
                     <div style={s.miniRink}>
-                      <RinkSVG />
+                      <img src={rinkImg} alt="hockey rink" style={{ width: "100%", display: "block" }} draggable={false} />
                       {stats.shots.map(shot => (
                         <div
                           key={shot.id}
@@ -234,77 +235,6 @@ export default function Report() {
         <span style={s.footerText}>Powered by ShotTracker</span>
       </div>
     </div>
-  )
-}
-
-function RinkSVG() {
-  return (
-    <svg viewBox="0 0 400 210" style={{ width: '100%', height: '100%', display: 'block' }} xmlns="http://www.w3.org/2000/svg">
-      <rect x="0" y="0" width="400" height="210" fill="#f0f8ff" rx="28" />
-      <rect x="1" y="1" width="398" height="208" fill="none" stroke="#c00" strokeWidth="2.5" rx="27" />
-      <line x1="200" y1="1" x2="200" y2="209" stroke="#e63946" strokeWidth="3" />
-      <line x1="133" y1="1" x2="133" y2="209" stroke="#1d4ed8" strokeWidth="2.5" />
-      <line x1="267" y1="1" x2="267" y2="209" stroke="#1d4ed8" strokeWidth="2.5" />
-      <line x1="30" y1="1" x2="30" y2="209" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="370" y1="1" x2="370" y2="209" stroke="#e63946" strokeWidth="1.5" />
-      <circle cx="200" cy="105" r="35" fill="none" stroke="#1d4ed8" strokeWidth="1.5" />
-      <circle cx="200" cy="105" r="3" fill="#1d4ed8" />
-      <line x1="200" y1="78" x2="200" y2="92" stroke="#1d4ed8" strokeWidth="1.5" />
-      <line x1="200" y1="118" x2="200" y2="132" stroke="#1d4ed8" strokeWidth="1.5" />
-      <path d="M30 90 Q52 90 52 105 Q52 120 30 120" fill="#bbd4f5" stroke="#1d4ed8" strokeWidth="1.2" />
-      <rect x="20" y="93" width="10" height="24" fill="#e8f0fe" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="30" y1="93" x2="30" y2="117" stroke="#e63946" strokeWidth="2" />
-      <path d="M370 90 Q348 90 348 105 Q348 120 370 120" fill="#bbd4f5" stroke="#1d4ed8" strokeWidth="1.2" />
-      <rect x="370" y="93" width="10" height="24" fill="#e8f0fe" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="370" y1="93" x2="370" y2="117" stroke="#e63946" strokeWidth="2" />
-      <circle cx="72" cy="60" r="22" fill="none" stroke="#e63946" strokeWidth="1.5" />
-      <circle cx="72" cy="60" r="3" fill="#e63946" />
-      <line x1="62" y1="60" x2="68" y2="60" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="76" y1="60" x2="82" y2="60" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="72" y1="50" x2="72" y2="56" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="72" y1="64" x2="72" y2="70" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="64" y1="53" x2="64" y2="47" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="80" y1="53" x2="80" y2="47" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="64" y1="67" x2="64" y2="73" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="80" y1="67" x2="80" y2="73" stroke="#e63946" strokeWidth="1.5" />
-      <circle cx="72" cy="150" r="22" fill="none" stroke="#e63946" strokeWidth="1.5" />
-      <circle cx="72" cy="150" r="3" fill="#e63946" />
-      <line x1="62" y1="150" x2="68" y2="150" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="76" y1="150" x2="82" y2="150" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="72" y1="140" x2="72" y2="146" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="72" y1="154" x2="72" y2="160" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="64" y1="143" x2="64" y2="137" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="80" y1="143" x2="80" y2="137" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="64" y1="157" x2="64" y2="163" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="80" y1="157" x2="80" y2="163" stroke="#e63946" strokeWidth="1.5" />
-      <circle cx="328" cy="60" r="22" fill="none" stroke="#e63946" strokeWidth="1.5" />
-      <circle cx="328" cy="60" r="3" fill="#e63946" />
-      <line x1="318" y1="60" x2="324" y2="60" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="332" y1="60" x2="338" y2="60" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="328" y1="50" x2="328" y2="56" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="328" y1="64" x2="328" y2="70" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="320" y1="53" x2="320" y2="47" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="336" y1="53" x2="336" y2="47" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="320" y1="67" x2="320" y2="73" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="336" y1="67" x2="336" y2="73" stroke="#e63946" strokeWidth="1.5" />
-      <circle cx="328" cy="150" r="22" fill="none" stroke="#e63946" strokeWidth="1.5" />
-      <circle cx="328" cy="150" r="3" fill="#e63946" />
-      <line x1="318" y1="150" x2="324" y2="150" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="332" y1="150" x2="338" y2="150" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="328" y1="140" x2="328" y2="146" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="328" y1="154" x2="328" y2="160" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="320" y1="143" x2="320" y2="137" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="336" y1="143" x2="336" y2="137" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="320" y1="157" x2="320" y2="163" stroke="#e63946" strokeWidth="1.5" />
-      <line x1="336" y1="157" x2="336" y2="163" stroke="#e63946" strokeWidth="1.5" />
-      <circle cx="160" cy="70" r="3" fill="#e63946" />
-      <circle cx="160" cy="140" r="3" fill="#e63946" />
-      <circle cx="240" cy="70" r="3" fill="#e63946" />
-      <circle cx="240" cy="140" r="3" fill="#e63946" />
-      <path d="M188 1 Q200 18 212 1" fill="none" stroke="#e63946" strokeWidth="1.2" />
-      <circle cx="30" cy="105" r="8" fill="#6fa8dc" stroke="none" />
-      <circle cx="370" cy="105" r="8" fill="#6fa8dc" stroke="none" />
-    </svg>
   )
 }
 
