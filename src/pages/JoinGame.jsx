@@ -13,11 +13,11 @@ export default function JoinGame() {
     setLoading(true)
     setError(null)
 
-    // Find the team by join code
+    // Find the team by join code (case insensitive)
     const { data: team, error: teamError } = await supabase
       .from('teams')
       .select('*')
-      .eq('join_code', code.toUpperCase().trim())
+      .ilike('join_code', code.trim())
       .single()
 
     if (teamError || !team) {
@@ -90,7 +90,7 @@ const styles = {
     padding: '0.75rem', borderRadius: '8px', border: '1px solid #d1d5db',
     fontSize: '1.25rem', fontWeight: '700', letterSpacing: '0.1em',
     textAlign: 'center', outline: 'none', color: '#111',
-    textTransform: 'uppercase',
+    textTransform: 'uppercase', backgroundColor: '#fff',
   },
   error: { color: '#dc2626', fontSize: '0.875rem', margin: 0 },
   button: {
