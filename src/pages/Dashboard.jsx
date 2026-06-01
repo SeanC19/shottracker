@@ -1,18 +1,82 @@
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
 
 export default function Dashboard() {
+  const [teams, setTeams] = useState([])
+  const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    fetchTeams()
+  }, [])
+
+  async function fetchTeams() {
+    const { data: { user } } = await supabase.auth.getUser()
+
+    const { data, error } = await supabase
+      .from('teams')
+      .select('*')
+      .eq('owner_id', user.id)
+      .order('created_at', { ascending: false })
+
+    if (!error) setTeams(data)
+    setLoading(false)
+  }
+
   async function handleSignOut() {
     await supabase.auth.signOut()
   }
 
+  const sportEmoji = {
+    hockey: '🏒',
+    soccer: '⚽',
+    lacrosse: '🥍',
+    basketball: '🏀',
+  }
+
   return (
     <div style={styles.container}>
-      <div style={styles.card}>
-        <h1 style={styles.title}>You're in! 🏒</h1>
-        <p style={styles.subtitle}>Auth is working. Next up: teams and rosters.</p>
-        <button onClick={handleSignOut} style={styles.button}>
-          Sign out
-        </button>
+      <div style={styles.header}>
+        <h1 style={styles.title}>ShotTracker</h1>
+        <button onClick={handleSignOut} style={styles.signOutBtn}>Sign out</button>
+      </div>
+
+      <div style={styles.content}>
+        <div style={styles.sectionHeader}>
+          <h2 style={styles.sectionTitle}>Your Teams</h2>
+          <button onClick={() => navigate('/teams/new')} style={styles.newBtn}>
+            + New Team
+          </button>
+        </div>
+
+        {loading && <p style={styles.muted}>Loading...</p>}
+
+        {!loading && teams.length === 0 && (
+          <div style={styles.empty}>
+            <p style={styles.emptyText}>No teams yet.</p>
+            <button onClick={() => navigate('/teams/new')} style={styles.newBtn}>
+              Create your first team
+            </button>
+          </div>
+        )}
+
+        <div style={styles.grid}>
+          {teams.map(team => (
+            <div
+              key={team.id}
+              style={styles.card}
+              onClick={() => navigate(`/teams/${team.id}`)}
+            >
+              <div style={styles.cardTop}>
+                <span style={styles.emoji}>{sportEmoji[team.sport] || '🏒'}</span>
+                <span style={styles.joinCode}>{team.join_code}</span>
+              </div>
+              <h3 style={styles.teamName}>{team.name}</h3>
+              <p style={styles.sport}>{team.sport}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )
@@ -21,39 +85,109 @@ export default function Dashboard() {
 const styles = {
   container: {
     minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#f4f4f5',
   },
-  card: {
+  header: {
     backgroundColor: '#fff',
-    padding: '2.5rem',
-    borderRadius: '12px',
-    boxShadow: '0 2px 16px rgba(0,0,0,0.08)',
-    width: '100%',
-    maxWidth: '400px',
-    textAlign: 'center',
+    padding: '1rem 1.5rem',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottom: '1px solid #e5e7eb',
   },
   title: {
-    fontSize: '1.75rem',
+    fontSize: '1.25rem',
     fontWeight: '700',
-    margin: '0 0 0.5rem',
+    margin: 0,
     color: '#111',
   },
-  subtitle: {
+  signOutBtn: {
+    background: 'none',
+    border: 'none',
     color: '#71717a',
-    margin: '0 0 1.5rem',
-    fontSize: '0.95rem',
+    cursor: 'pointer',
+    fontSize: '0.875rem',
   },
-  button: {
-    padding: '0.75rem 1.5rem',
-    backgroundColor: '#ef4444',
+  content: {
+    maxWidth: '600px',
+    margin: '0 auto',
+    padding: '1.5rem',
+  },
+  sectionHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '1rem',
+  },
+  sectionTitle: {
+    fontSize: '1.1rem',
+    fontWeight: '600',
+    margin: 0,
+    color: '#111',
+  },
+  newBtn: {
+    padding: '0.5rem 1rem',
+    backgroundColor: '#2563eb',
     color: '#fff',
     border: 'none',
     borderRadius: '8px',
-    fontSize: '1rem',
+    fontSize: '0.875rem',
     fontWeight: '600',
     cursor: 'pointer',
+  },
+  muted: {
+    color: '#71717a',
+    fontSize: '0.95rem',
+  },
+  empty: {
+    textAlign: 'center',
+    padding: '3rem 1rem',
+  },
+  emptyText: {
+    color: '#71717a',
+    marginBottom: '1rem',
+  },
+  grid: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.75rem',
+  },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: '12px',
+    padding: '1.25rem',
+    cursor: 'pointer',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+    border: '1px solid #e5e7eb',
+  },
+  cardTop: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '0.5rem',
+  },
+  emoji: {
+    fontSize: '1.5rem',
+  },
+  joinCode: {
+    fontSize: '0.75rem',
+    fontWeight: '700',
+    color: '#2563eb',
+    backgroundColor: '#eff6ff',
+    padding: '0.2rem 0.5rem',
+    borderRadius: '6px',
+    letterSpacing: '0.05em',
+  },
+  teamName: {
+    fontSize: '1.1rem',
+    fontWeight: '600',
+    margin: '0 0 0.2rem',
+    color: '#111',
+  },
+  sport: {
+    fontSize: '0.875rem',
+    color: '#71717a',
+    margin: 0,
+    textTransform: 'capitalize',
   },
 }
