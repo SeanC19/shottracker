@@ -139,7 +139,6 @@ const styles = {
     fontSize: '1rem',
     outline: 'none',
     backgroundColor: '#fff',
-    color: '#111',        // add this
   },
   preview: {
     fontSize: '0.875rem',

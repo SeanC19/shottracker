@@ -4,8 +4,11 @@ import { supabase } from './supabase'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard'
-import CreateTeam from './pages/Createteam'
+import CreateTeam from './pages/CreateTeam'
 import TeamDetail from './pages/TeamDetail'
+import CreateGame from './pages/CreateGame'
+import GameSession from './pages/GameSession'
+import JoinGame from './pages/JoinGame'
 
 export default function App() {
   const [session, setSession] = useState(undefined)
@@ -24,14 +27,20 @@ export default function App() {
 
   if (session === undefined) return null
 
+  const auth = (el) => session ? el : <Navigate to="/login" />
+  const guest = (el) => !session ? el : <Navigate to="/" />
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={!session ? <Login /> : <Navigate to="/" />} />
-        <Route path="/signup" element={!session ? <Signup /> : <Navigate to="/" />} />
-        <Route path="/" element={session ? <Dashboard /> : <Navigate to="/login" />} />
-        <Route path="/teams/new" element={session ? <CreateTeam /> : <Navigate to="/login" />} />
-        <Route path="/teams/:id" element={session ? <TeamDetail /> : <Navigate to="/login" />} />
+        <Route path="/login" element={guest(<Login />)} />
+        <Route path="/signup" element={guest(<Signup />)} />
+        <Route path="/" element={auth(<Dashboard />)} />
+        <Route path="/teams/new" element={auth(<CreateTeam />)} />
+        <Route path="/teams/:id" element={auth(<TeamDetail />)} />
+        <Route path="/teams/:teamId/games/new" element={auth(<CreateGame />)} />
+        <Route path="/games/:id" element={auth(<GameSession />)} />
+        <Route path="/join" element={auth(<JoinGame />)} />
       </Routes>
     </BrowserRouter>
   )

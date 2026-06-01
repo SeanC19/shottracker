@@ -43,6 +43,13 @@ export default function Dashboard() {
       </div>
 
       <div style={styles.content}>
+        <div style={styles.joinBanner}>
+          <span style={styles.joinText}>Have a join code?</span>
+          <button onClick={() => navigate('/join')} style={styles.joinBtn}>
+            Join a Game
+          </button>
+        </div>
+
         <div style={styles.sectionHeader}>
           <h2 style={styles.sectionTitle}>Your Teams</h2>
           <button onClick={() => navigate('/teams/new')} style={styles.newBtn}>
@@ -146,6 +153,22 @@ const styles = {
   emptyText: {
     color: '#71717a',
     marginBottom: '1rem',
+  },
+  joinBanner: {
+    backgroundColor: '#eff6ff',
+    border: '1px solid #bfdbfe',
+    borderRadius: '10px',
+    padding: '0.75rem 1rem',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '1.25rem',
+  },
+  joinText: { fontSize: '0.875rem', color: '#1d4ed8', fontWeight: '500' },
+  joinBtn: {
+    padding: '0.4rem 0.9rem', backgroundColor: '#2563eb', color: '#fff',
+    border: 'none', borderRadius: '7px', fontSize: '0.875rem',
+    fontWeight: '600', cursor: 'pointer',
   },
   grid: {
     display: 'flex',
