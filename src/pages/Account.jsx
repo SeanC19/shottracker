@@ -50,7 +50,7 @@ export default function Account() {
           </button>
         </div>
 
-        <p style={s.version}>ShotTracker · v0.1</p>
+        <p style={s.version}>ShotMap · v0.1</p>
       </div>
     </div>
   )

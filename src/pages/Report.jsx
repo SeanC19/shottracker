@@ -94,7 +94,7 @@ export default function Report() {
         <div style={s.headerTop}>
           <div style={s.headerLeft}>
             <button onClick={() => navigate(-1)} style={s.backBtn}>←</button>
-            <span style={s.appName}>ShotTracker</span>
+            <span style={s.appName}>ShotMap</span>
           </div>
           <button onClick={copyLink} style={s.shareBtn}>
             {copied ? '✓ Copied!' : 'Share Link'}
@@ -232,7 +232,7 @@ export default function Report() {
       )}
 
       <div style={s.footer}>
-        <span style={s.footerText}>Powered by ShotTracker</span>
+        <span style={s.footerText}>Powered by ShotMap</span>
       </div>
     </div>
   )

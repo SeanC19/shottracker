@@ -22,7 +22,7 @@ export default function Login() {
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h1 style={styles.title}>ShotTracker</h1>
+        <h1 style={styles.title}>ShotMap</h1>
         <p style={styles.subtitle}>Sign in to your account</p>
 
         <form onSubmit={handleLogin} style={styles.form}>

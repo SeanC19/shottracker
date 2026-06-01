@@ -38,7 +38,7 @@ export default function Dashboard() {
   return (
     <div style={styles.container}>
       <div style={styles.header}>
-        <h1 style={styles.title}>ShotTracker</h1>
+        <h1 style={styles.title}>ShotMap</h1>
         <button onClick={handleSignOut} style={styles.signOutBtn}>Sign out</button>
       </div>
 
