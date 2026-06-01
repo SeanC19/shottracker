@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { supabase } from './supabase'
+import TabBar from './components/TabBar'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard'
@@ -9,6 +10,8 @@ import TeamDetail from './pages/TeamDetail'
 import CreateGame from './pages/CreateGame'
 import GameSession from './pages/GameSession'
 import JoinGame from './pages/JoinGame'
+import Report from './pages/Report'
+import Account from './pages/Account'
 
 export default function App() {
   const [session, setSession] = useState(undefined)
@@ -41,7 +44,10 @@ export default function App() {
         <Route path="/teams/:teamId/games/new" element={auth(<CreateGame />)} />
         <Route path="/games/:id" element={auth(<GameSession />)} />
         <Route path="/join" element={auth(<JoinGame />)} />
+        <Route path="/report/:token" element={<Report />} />
+        <Route path="/account" element={auth(<Account />)} />
       </Routes>
+      <TabBar />
     </BrowserRouter>
   )
 }

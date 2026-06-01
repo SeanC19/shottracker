@@ -93,6 +93,7 @@ const styles = {
   container: {
     minHeight: '100vh',
     backgroundColor: '#f4f4f5',
+    paddingBottom: '80px',
   },
   header: {
     backgroundColor: '#fff',

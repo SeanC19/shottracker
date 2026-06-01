@@ -204,7 +204,7 @@ export default function TeamDetail() {
 }
 
 const styles = {
-  container: { minHeight: '100vh', backgroundColor: '#f4f4f5' },
+  container: { minHeight: '100vh', backgroundColor: '#f4f4f5', paddingBottom: '80px' },
   loading: { padding: '2rem', color: '#71717a' },
   header: {
     backgroundColor: '#fff',
