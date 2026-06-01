@@ -28,6 +28,12 @@ export default function Dashboard() {
     await supabase.auth.signOut()
   }
 
+  async function removeTeam(e, teamId) {
+    e.stopPropagation()
+    await supabase.from('teams').delete().eq('id', teamId)
+    setTeams(prev => prev.filter(t => t.id !== teamId))
+  }
+
   const sportEmoji = {
     hockey: '🏒',
     soccer: '⚽',
@@ -80,7 +86,10 @@ export default function Dashboard() {
                 <span style={styles.joinCode}>{team.join_code}</span>
               </div>
               <h3 style={styles.teamName}>{team.name}</h3>
-              <p style={styles.sport}>{team.sport}</p>
+              <div style={styles.cardBottom}>
+                <p style={styles.sport}>{team.sport}</p>
+                <button onClick={e => removeTeam(e, team.id)} style={styles.removeBtn}>Remove</button>
+              </div>
             </div>
           ))}
         </div>
@@ -208,10 +217,19 @@ const styles = {
     margin: '0 0 0.2rem',
     color: '#111',
   },
+  cardBottom: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   sport: {
     fontSize: '0.875rem',
     color: '#71717a',
     margin: 0,
     textTransform: 'capitalize',
+  },
+  removeBtn: {
+    background: 'none', border: 'none', color: '#ef4444',
+    cursor: 'pointer', fontSize: '0.8rem', padding: 0,
   },
 }
