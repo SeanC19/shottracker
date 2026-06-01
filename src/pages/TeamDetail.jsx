@@ -257,7 +257,7 @@ const styles = {
   },
   error: { color: '#dc2626', fontSize: '0.875rem', margin: '0.5rem 0 0' },
   empty: { color: '#71717a', fontSize: '0.95rem', textAlign: 'center', padding: '2rem 0' },
-  playerList: { display: 'flex', flexDirection: 'column', gap: '0.5rem' },
+  playerList: { display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '400px', overflowY: 'auto' },
   playerRow: {
     backgroundColor: '#fff', borderRadius: '10px', padding: '0.75rem 1rem',
     display: 'flex', alignItems: 'center', gap: '0.75rem', border: '1px solid #e5e7eb',
