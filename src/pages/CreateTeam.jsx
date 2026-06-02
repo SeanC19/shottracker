@@ -44,6 +44,11 @@ export default function CreateTeam() {
       setError(error.message)
       setLoading(false)
     } else {
+      await supabase.from('players').insert({
+        team_id: data.id,
+        name: 'Guest',
+        jersey_number: 1,
+      })
       navigate(`/teams/${data.id}`)
     }
   }

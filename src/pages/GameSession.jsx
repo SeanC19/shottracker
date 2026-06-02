@@ -41,7 +41,6 @@ export default function GameSession() {
   const [selectedResult, setSelectedResult] = useState('On Target')
   const [selectedType, setSelectedType] = useState('Wrist')
   const [saving, setSaving] = useState(false)
-  const [saveError, setSaveError] = useState(null)
   const [codeCopied, setCodeCopied] = useState(false)
 
   useEffect(() => {
@@ -73,26 +72,23 @@ export default function GameSession() {
   }
 
   async function saveShot() {
-    if (!pendingShot) return
+    if (!pendingShot || !selectedPlayer) return
     setSaving(true)
-    setSaveError(null)
 
     const { data, error } = await supabase
       .from('shots')
       .insert({
         game_id: id,
-        player_id: selectedPlayer?.id ?? null,
+        player_id: selectedPlayer.id,
         x_pct: pendingShot.x_pct,
         y_pct: pendingShot.y_pct,
-        shot_type: (selectedType ?? 'wrist').toLowerCase(),
-        result: (selectedResult ?? 'on_target').toLowerCase().replace(' ', '_'),
+        shot_type: selectedType.toLowerCase(),
+        result: selectedResult.toLowerCase().replace(' ', '_'),
       })
       .select('*, players(name, jersey_number)')
       .single()
 
-    if (error) {
-      setSaveError(error.message)
-    } else {
+    if (!error) {
       setShots(prev => [...prev, data])
       setPendingShot(null)
     }
@@ -247,34 +243,30 @@ export default function GameSession() {
         </div>
 
         {/* Player grid */}
-        {players.length > 0 && (
-          <div style={s.playerGrid}>
-            {players.map(p => (
-              <button
-                key={p.id}
-                style={{
-                  ...s.playerBtn,
-                  backgroundColor: selectedPlayer?.id === p.id ? '#2563eb' : '#f4f4f5',
-                  color: selectedPlayer?.id === p.id ? '#fff' : '#111',
-                }}
-                onClick={() => setSelectedPlayer(prev => prev?.id === p.id ? null : p)}
-              >
-                <span style={s.playerNum}>#{p.jersey_number ?? '—'}</span>
-                <span style={s.playerNameBtn}>{p.name.split(' ')[0]}</span>
-              </button>
-            ))}
-          </div>
-        )}
-
-        {saveError && <p style={s.saveErrorText}>{saveError}</p>}
+        <div style={s.playerGrid}>
+          {players.map(p => (
+            <button
+              key={p.id}
+              style={{
+                ...s.playerBtn,
+                backgroundColor: selectedPlayer?.id === p.id ? '#2563eb' : '#f4f4f5',
+                color: selectedPlayer?.id === p.id ? '#fff' : '#111',
+              }}
+              onClick={() => setSelectedPlayer(prev => prev?.id === p.id ? null : p)}
+            >
+              <span style={s.playerNum}>#{p.jersey_number ?? '—'}</span>
+              <span style={s.playerNameBtn}>{p.name.split(' ')[0]}</span>
+            </button>
+          ))}
+        </div>
 
         {/* Actions — always visible */}
         <div style={s.actions}>
           <button onClick={undoLastShot} style={{ ...s.cancelBtn, opacity: (!pendingShot && shots.length === 0) ? 0.4 : 1 }} disabled={!pendingShot && shots.length === 0}>Undo</button>
           <button
             onClick={saveShot}
-            style={{ ...s.saveBtn, opacity: pendingShot ? 1 : 0.5 }}
-            disabled={!pendingShot || saving}
+            style={{ ...s.saveBtn, opacity: (!pendingShot || !selectedPlayer) ? 0.5 : 1 }}
+            disabled={!pendingShot || !selectedPlayer || saving}
           >
             {saving ? 'Saving...' : 'Log Shot'}
           </button>
@@ -353,7 +345,6 @@ const s = {
     display: 'flex', flexDirection: 'column', gap: '0.6rem',
   },
   noShotPrompt: { textAlign: 'center', color: '#555', fontSize: '0.78rem', padding: '0.25rem 0' },
-  saveErrorText: { color: '#ef4444', fontSize: '0.78rem', textAlign: 'center', margin: 0 },
   resultRow: { display: 'flex', gap: '0.4rem', justifyContent: 'center', flexWrap: 'wrap' },
   resultBtn: {
     flex: 1, minWidth: '70px', padding: '0.5rem 0.25rem', borderRadius: '8px',
