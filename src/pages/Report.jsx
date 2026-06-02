@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
 import rinkImg from '../assets/rink.png'
+import soccerImg from '../assets/Soccer.svg'
+import lacrosseImg from '../assets/lacrosse.svg'
+
+const FIELD_IMAGES = { hockey: rinkImg, soccer: soccerImg, lacrosse: lacrosseImg }
 
 const RESULT_COLORS = {
   goal: '#16a34a',
@@ -146,7 +150,7 @@ export default function Report() {
         <h2 style={s.sectionTitle}>Shot Map</h2>
         <div style={s.rinkWrap}>
           <div style={s.rinkContainer}>
-            <img src={rinkImg} alt="hockey rink" style={{ width: "100%", display: "block" }} draggable={false} />
+            <img src={FIELD_IMAGES[team?.sport] ?? rinkImg} alt="field" style={{ width: "100%", display: "block" }} draggable={false} />
             {shots.map(shot => (
               <div
                 key={shot.id}
@@ -221,7 +225,7 @@ export default function Report() {
                   {/* Mini shot map per player */}
                   <div style={s.miniRinkWrap}>
                     <div style={s.miniRink}>
-                      <img src={rinkImg} alt="hockey rink" style={{ width: "100%", display: "block" }} draggable={false} />
+                      <img src={FIELD_IMAGES[team?.sport] ?? rinkImg} alt="field" style={{ width: "100%", display: "block" }} draggable={false} />
                       {stats.shots.map(shot => (
                         <div
                           key={shot.id}

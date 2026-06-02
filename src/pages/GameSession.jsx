@@ -3,6 +3,10 @@ import { getUserPlan } from '../utils/plan'
 import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../supabase'
 import rinkImg from '../assets/rink.png'
+import soccerImg from '../assets/Soccer.svg'
+import lacrosseImg from '../assets/lacrosse.svg'
+
+const FIELD_IMAGES = { hockey: rinkImg, soccer: soccerImg, lacrosse: lacrosseImg }
 
 const RESULTS = ['Goal', 'On Target', 'Missed', 'Blocked']
 const SHOT_TYPES = ['Wrist', 'Slap', 'Snap', 'Backhand', 'Tip']
@@ -158,7 +162,7 @@ export default function GameSession() {
           onClick={handleRinkTap}
           onKeyDown={e => e.key === 'Enter' && handleRinkTap(e)}
         >
-          <img src={rinkImg} alt="hockey rink" style={{ width: "100%", display: "block" }} draggable={false} />
+          <img src={FIELD_IMAGES[team?.sport] ?? rinkImg} alt="field" style={{ width: "100%", display: "block" }} draggable={false} />
 
           {/* Logged shots */}
           {shots.map(shot => (

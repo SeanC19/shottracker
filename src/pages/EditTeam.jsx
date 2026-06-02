@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../supabase'
 
-const SPORTS = ['hockey', 'soccer', 'lacrosse', 'basketball']
+const SPORTS = ['hockey', 'soccer', 'lacrosse']
 
 export default function EditTeam() {
   const { id } = useParams()
@@ -39,8 +39,9 @@ export default function EditTeam() {
 
         <form onSubmit={handleSubmit} style={styles.form}>
           <div style={styles.field}>
-            <label style={styles.label}>Team name</label>
+            <label htmlFor="name" style={styles.label}>Team name</label>
             <input
+              id="name"
               type="text"
               value={name}
               onChange={e => setName(e.target.value)}
@@ -50,8 +51,8 @@ export default function EditTeam() {
           </div>
 
           <div style={styles.field}>
-            <label style={styles.label}>Sport</label>
-            <select value={sport} onChange={e => setSport(e.target.value)} style={styles.input}>
+            <label htmlFor="sport" style={styles.label}>Sport</label>
+            <select id="sport" value={sport} onChange={e => setSport(e.target.value)} style={styles.input}>
               {SPORTS.map(s => (
                 <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
               ))}

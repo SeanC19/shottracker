@@ -41,7 +41,6 @@ export default function Dashboard() {
     hockey: '🏒',
     soccer: '⚽',
     lacrosse: '🥍',
-    basketball: '🏀',
   }
 
   return (

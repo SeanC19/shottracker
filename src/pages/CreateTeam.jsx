@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
 import { generateJoinCode } from '../utils/joinCode'
 
-const SPORTS = ['hockey', 'soccer', 'lacrosse', 'basketball']
+const SPORTS = ['hockey', 'soccer', 'lacrosse']
 
 export default function CreateTeam() {
   const [name, setName] = useState('')
