@@ -1,16 +1,18 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
-
-async function handleGuest() {
-  await supabase.auth.signInAnonymously()
-}
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
+
+  async function handleGuest() {
+    await supabase.auth.signInAnonymously()
+    navigate('/')
+  }
 
   async function handleLogin(e) {
     e.preventDefault()
