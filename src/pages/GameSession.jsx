@@ -133,8 +133,7 @@ export default function GameSession() {
             {codeCopied ? '✓ Copied' : game.game_code}
           </button>
         )}
-        <button onClick={() => navigate(`/games/${id}/edit`)} style={s.editBtn}>Edit</button>
-        <button onClick={() => navigate(`/report/${game.share_token}`)} style={s.reportBtn}>
+<button onClick={() => navigate(`/report/${game.share_token}`)} style={s.reportBtn}>
           Report
         </button>
       </div>
@@ -303,11 +302,6 @@ const s = {
     padding: '0.25rem 0.5rem', backgroundColor: '#2a2a2a', color: '#f59e0b',
     border: '1px solid #444', borderRadius: '6px', fontSize: '0.75rem',
     fontWeight: '700', letterSpacing: '0.05em', cursor: 'pointer', flexShrink: 0,
-  },
-  editBtn: {
-    padding: '0.35rem 0.75rem', background: 'none', color: '#aaa',
-    border: '1px solid #444', borderRadius: '6px', fontSize: '0.8rem',
-    cursor: 'pointer', flexShrink: 0,
   },
   reportBtn: {
     padding: '0.35rem 0.75rem', backgroundColor: '#2563eb', color: '#fff',
