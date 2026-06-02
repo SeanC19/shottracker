@@ -41,6 +41,7 @@ export default function GameSession() {
   const [selectedResult, setSelectedResult] = useState('On Target')
   const [selectedType, setSelectedType] = useState('Wrist')
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState(null)
   const [codeCopied, setCodeCopied] = useState(false)
 
   useEffect(() => {
@@ -74,6 +75,7 @@ export default function GameSession() {
   async function saveShot() {
     if (!pendingShot) return
     setSaving(true)
+    setSaveError(null)
 
     const { data, error } = await supabase
       .from('shots')
@@ -82,13 +84,15 @@ export default function GameSession() {
         player_id: selectedPlayer?.id ?? null,
         x_pct: pendingShot.x_pct,
         y_pct: pendingShot.y_pct,
-        shot_type: selectedType.toLowerCase(),
-        result: selectedResult.toLowerCase().replace(' ', '_'),
+        shot_type: (selectedType ?? 'wrist').toLowerCase(),
+        result: (selectedResult ?? 'on_target').toLowerCase().replace(' ', '_'),
       })
       .select('*, players(name, jersey_number)')
       .single()
 
-    if (!error) {
+    if (error) {
+      setSaveError(error.message)
+    } else {
       setShots(prev => [...prev, data])
       setPendingShot(null)
     }
@@ -262,6 +266,8 @@ export default function GameSession() {
           </div>
         )}
 
+        {saveError && <p style={s.saveErrorText}>{saveError}</p>}
+
         {/* Actions — always visible */}
         <div style={s.actions}>
           <button onClick={undoLastShot} style={{ ...s.cancelBtn, opacity: (!pendingShot && shots.length === 0) ? 0.4 : 1 }} disabled={!pendingShot && shots.length === 0}>Undo</button>
@@ -347,6 +353,7 @@ const s = {
     display: 'flex', flexDirection: 'column', gap: '0.6rem',
   },
   noShotPrompt: { textAlign: 'center', color: '#555', fontSize: '0.78rem', padding: '0.25rem 0' },
+  saveErrorText: { color: '#ef4444', fontSize: '0.78rem', textAlign: 'center', margin: 0 },
   resultRow: { display: 'flex', gap: '0.4rem', justifyContent: 'center', flexWrap: 'wrap' },
   resultBtn: {
     flex: 1, minWidth: '70px', padding: '0.5rem 0.25rem', borderRadius: '8px',
