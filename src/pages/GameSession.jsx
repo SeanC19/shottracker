@@ -53,6 +53,7 @@ export default function GameSession() {
   }
 
   function handleRinkTap(e) {
+    if (e.type === 'touchstart') e.preventDefault()
     const rect = rinkRef.current.getBoundingClientRect()
     const x = e.clientX ?? e.touches?.[0]?.clientX
     const y = e.clientY ?? e.touches?.[0]?.clientY
@@ -88,7 +89,6 @@ export default function GameSession() {
 
   function cancelShot() {
     setPendingShot(null)
-    setSelectedPlayer(null)
   }
 
   function getResultColor(result) {
