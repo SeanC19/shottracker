@@ -30,7 +30,6 @@ export default function GameSession() {
   const [selectedResult, setSelectedResult] = useState('On Target')
   const [selectedType, setSelectedType] = useState('Wrist')
   const [saving, setSaving] = useState(false)
-  const [showTypeSelector, setShowTypeSelector] = useState(false)
 
   useEffect(() => {
     fetchAll()
@@ -61,10 +60,6 @@ export default function GameSession() {
     const x_pct = (x - rect.left) / rect.width
     const y_pct = (y - rect.top) / rect.height
     setPendingShot({ x_pct, y_pct })
-    setSelectedPlayer(null)
-    setSelectedResult('On Target')
-    setSelectedType('Wrist')
-    setShowTypeSelector(false)
   }
 
   async function saveShot() {
@@ -87,7 +82,6 @@ export default function GameSession() {
     if (!error) {
       setShots(prev => [...prev, data])
       setPendingShot(null)
-      setSelectedPlayer(null)
     }
     setSaving(false)
   }
