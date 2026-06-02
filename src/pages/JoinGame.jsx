@@ -16,7 +16,7 @@ export default function JoinGame() {
     const { data: game, error: gameError } = await supabase
       .from('games')
       .select('*')
-      .ilike('join_code', code.trim())
+      .ilike('game_code', code.trim())
       .single()
 
     if (gameError || !game) {

@@ -114,16 +114,16 @@ export default function GameSession() {
           <span style={s.matchup}>{team?.name} vs {game.opponent}</span>
           <span style={s.stats}>{shots.length} shots · {goalCount} goals · {onTargetCount} on target</span>
         </div>
-        {game.join_code && (
+        {game.game_code && (
           <button
             style={s.joinCodeChip}
             onClick={() => {
-              navigator.clipboard.writeText(game.join_code)
+              navigator.clipboard.writeText(game.game_code)
               setCodeCopied(true)
               setTimeout(() => setCodeCopied(false), 2000)
             }}
           >
-            {codeCopied ? '✓ Copied' : game.join_code}
+            {codeCopied ? '✓ Copied' : game.game_code}
           </button>
         )}
         <button onClick={() => navigate(`/games/${id}/edit`)} style={s.editBtn}>Edit</button>

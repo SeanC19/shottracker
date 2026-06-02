@@ -25,7 +25,7 @@ export default function CreateGame() {
         opponent,
         location: location || null,
         game_date: gameDate,
-        join_code: generateJoinCode(opponent),
+        game_code: generateJoinCode(opponent),
       })
       .select()
       .single()

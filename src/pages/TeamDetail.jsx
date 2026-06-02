@@ -264,8 +264,8 @@ export default function TeamDetail() {
                     </span>
                     {game.location && <span style={styles.location}>{game.location}</span>}
                   </div>
-                  {game.join_code && (
-                    <span style={styles.gameCode}>{game.join_code}</span>
+                  {game.game_code && (
+                    <span style={styles.gameCode}>{game.game_code}</span>
                   )}
                   <button
                     style={styles.editRowBtn}
