@@ -72,14 +72,14 @@ export default function GameSession() {
   }
 
   async function saveShot() {
-    if (!pendingShot || !selectedPlayer) return
+    if (!pendingShot) return
     setSaving(true)
 
     const { data, error } = await supabase
       .from('shots')
       .insert({
         game_id: id,
-        player_id: selectedPlayer.id,
+        player_id: selectedPlayer?.id ?? null,
         x_pct: pendingShot.x_pct,
         y_pct: pendingShot.y_pct,
         shot_type: selectedType.toLowerCase(),
@@ -243,30 +243,32 @@ export default function GameSession() {
         </div>
 
         {/* Player grid */}
-        <div style={s.playerGrid}>
-          {players.map(p => (
-            <button
-              key={p.id}
-              style={{
-                ...s.playerBtn,
-                backgroundColor: selectedPlayer?.id === p.id ? '#2563eb' : '#f4f4f5',
-                color: selectedPlayer?.id === p.id ? '#fff' : '#111',
-              }}
-              onClick={() => setSelectedPlayer(prev => prev?.id === p.id ? null : p)}
-            >
-              <span style={s.playerNum}>#{p.jersey_number ?? '—'}</span>
-              <span style={s.playerNameBtn}>{p.name.split(' ')[0]}</span>
-            </button>
-          ))}
-        </div>
+        {players.length > 0 && (
+          <div style={s.playerGrid}>
+            {players.map(p => (
+              <button
+                key={p.id}
+                style={{
+                  ...s.playerBtn,
+                  backgroundColor: selectedPlayer?.id === p.id ? '#2563eb' : '#f4f4f5',
+                  color: selectedPlayer?.id === p.id ? '#fff' : '#111',
+                }}
+                onClick={() => setSelectedPlayer(prev => prev?.id === p.id ? null : p)}
+              >
+                <span style={s.playerNum}>#{p.jersey_number ?? '—'}</span>
+                <span style={s.playerNameBtn}>{p.name.split(' ')[0]}</span>
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Actions — always visible */}
         <div style={s.actions}>
           <button onClick={undoLastShot} style={{ ...s.cancelBtn, opacity: (!pendingShot && shots.length === 0) ? 0.4 : 1 }} disabled={!pendingShot && shots.length === 0}>Undo</button>
           <button
             onClick={saveShot}
-            style={{ ...s.saveBtn, opacity: (!pendingShot || !selectedPlayer) ? 0.5 : 1 }}
-            disabled={!pendingShot || !selectedPlayer || saving}
+            style={{ ...s.saveBtn, opacity: pendingShot ? 1 : 0.5 }}
+            disabled={!pendingShot || saving}
           >
             {saving ? 'Saving...' : 'Log Shot'}
           </button>
