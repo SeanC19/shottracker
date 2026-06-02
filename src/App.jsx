@@ -19,17 +19,12 @@ export default function App() {
   const [session, setSession] = useState(undefined)
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session) {
-        setSession(session)
-      } else {
-        const { data } = await supabase.auth.signInAnonymously()
-        setSession(data.session)
-      }
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) setSession(session)
+      setSession(session)
     })
 
     return () => subscription.unsubscribe()
@@ -37,9 +32,8 @@ export default function App() {
 
   if (session === undefined) return null
 
-  const isAnonymous = session?.user?.is_anonymous ?? true
+  const isAnonymous = session?.user?.is_anonymous ?? false
   const auth = (el) => session ? el : <Navigate to="/login" />
-  // Allow anonymous users through to signup so they can save their data
   const guest = (el) => (!session || isAnonymous) ? el : <Navigate to="/" />
 
   return (

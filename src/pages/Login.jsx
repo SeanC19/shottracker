@@ -2,6 +2,10 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../supabase'
 
+async function handleGuest() {
+  await supabase.auth.signInAnonymously()
+}
+
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -18,6 +22,7 @@ export default function Login() {
     if (error) setError(error.message)
     setLoading(false)
   }
+
 
   return (
     <div style={styles.container}>
@@ -56,6 +61,10 @@ export default function Login() {
             {loading ? 'Signing in...' : 'Sign in'}
           </button>
         </form>
+
+        <button onClick={handleGuest} style={styles.guestBtn}>
+          Continue as guest
+        </button>
 
         <p style={styles.footer}>
           Don't have an account?{' '}
@@ -132,6 +141,11 @@ const styles = {
     fontWeight: '600',
     cursor: 'pointer',
     marginTop: '0.5rem',
+  },
+  guestBtn: {
+    display: 'block', width: '100%', padding: '0.75rem', marginTop: '0.75rem',
+    backgroundColor: '#fff', color: '#374151', border: '1px solid #d1d5db',
+    borderRadius: '8px', fontSize: '1rem', cursor: 'pointer',
   },
   footer: {
     marginTop: '1.25rem',

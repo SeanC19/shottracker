@@ -7,6 +7,7 @@ export default function Account() {
   const [profile, setProfile] = useState(null)
   const [email, setEmail] = useState('')
   const [userId, setUserId] = useState(null)
+  const [isAnonymous, setIsAnonymous] = useState(false)
 
   const [rating, setRating] = useState(null)
   const [category, setCategory] = useState('General')
@@ -23,6 +24,7 @@ export default function Account() {
     const { data: { user } } = await supabase.auth.getUser()
     setEmail(user?.email || '')
     setUserId(user?.id || null)
+    setIsAnonymous(user?.is_anonymous ?? false)
 
     const { data } = await supabase
       .from('profiles')
@@ -152,11 +154,13 @@ export default function Account() {
         </div>
 
         {/* Sign out */}
-        <div style={s.section}>
-          <button onClick={handleSignOut} style={s.signOutBtn}>
-            Sign Out
-          </button>
-        </div>
+        {!isAnonymous && (
+          <div style={s.section}>
+            <button onClick={handleSignOut} style={s.signOutBtn}>
+              Sign Out
+            </button>
+          </div>
+        )}
 
         <p style={s.version}>ShotMap · v0.1</p>
       </div>
