@@ -223,7 +223,7 @@ const styles = {
     fontSize: '0.8rem', color: '#2563eb', fontWeight: '600',
     backgroundColor: '#eff6ff', padding: '0.15rem 0.4rem', borderRadius: '5px',
   },
-  content: { padding: '1.5rem', flex: 1, overflowY: 'auto' },
+  content: { padding: '1.5rem', flex: 1, overflowY: 'auto', minHeight: 0 },
   tabs: { display: 'flex', gap: '0.5rem', marginBottom: '1.25rem' },
   tab: {
     padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid #e5e7eb',

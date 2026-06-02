@@ -131,6 +131,7 @@ const styles = {
     padding: '1.5rem',
     flex: 1,
     overflowY: 'auto',
+    minHeight: 0,
   },
   sectionHeader: {
     display: 'flex',
@@ -186,6 +187,8 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     gap: '0.75rem',
+    maxHeight: '400px',
+    overflowY: 'auto',
   },
   card: {
     backgroundColor: '#fff',
