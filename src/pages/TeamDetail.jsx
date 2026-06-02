@@ -283,7 +283,6 @@ export default function TeamDetail() {
                   >
                     Remove
                   </button>
-                  <span style={styles.arrow}>→</span>
                 </button>
               ))}
             </div>
@@ -376,5 +375,4 @@ const styles = {
     backgroundColor: '#eff6ff', padding: '0.15rem 0.4rem',
     borderRadius: '5px', letterSpacing: '0.05em', flexShrink: 0,
   },
-  arrow: { color: '#d1d5db', fontSize: '1rem' },
 }
