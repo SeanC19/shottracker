@@ -13,7 +13,7 @@ import EditGame from './pages/EditGame'
 import GameSession from './pages/GameSession'
 import JoinGame from './pages/JoinGame'
 import Report from './pages/Report'
-import Account from './pages/Account.jsx/index.js'
+import Account from './pages/Account.jsx'
 
 export default function App() {
   const [session, setSession] = useState(undefined)
