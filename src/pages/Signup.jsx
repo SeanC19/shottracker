@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../supabase'
 
@@ -9,39 +9,20 @@ export default function Signup() {
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [isAnonymous, setIsAnonymous] = useState(false)
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setIsAnonymous(user?.is_anonymous ?? false)
-    })
-  }, [])
 
   async function handleSignup(e) {
     e.preventDefault()
     setLoading(true)
     setError(null)
 
-    let err
-    if (isAnonymous) {
-      // Convert anonymous account — preserves all existing teams/games/shots
-      const { error } = await supabase.auth.updateUser({
-        email,
-        password,
-        data: { display_name: displayName },
-      })
-      err = error
-    } else {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { display_name: displayName } },
-      })
-      err = error
-    }
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { display_name: displayName } },
+    })
 
-    if (err) {
-      setError(err.message)
+    if (error) {
+      setError(error.message)
     } else {
       setSuccess(true)
     }
@@ -67,9 +48,7 @@ export default function Signup() {
       <div style={styles.card}>
         <h1 style={styles.title}>ShotMap</h1>
         <p style={styles.subtitle}>
-          {isAnonymous
-            ? 'Save your data permanently and unlock multiple teams.'
-            : 'Create your account'}
+          Create your account
         </p>
 
         <form onSubmit={handleSignup} style={styles.form}>

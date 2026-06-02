@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { supabase } from '../supabase'
 
 export default function Login() {
@@ -7,12 +7,6 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
-
-  async function handleGuest() {
-    await supabase.auth.signInAnonymously()
-    navigate('/')
-  }
 
   async function handleLogin(e) {
     e.preventDefault()
@@ -63,10 +57,6 @@ export default function Login() {
             {loading ? 'Signing in...' : 'Sign in'}
           </button>
         </form>
-
-        <button onClick={handleGuest} style={styles.guestBtn}>
-          Continue as guest
-        </button>
 
         <p style={styles.footer}>
           Don't have an account?{' '}
@@ -143,11 +133,6 @@ const styles = {
     fontWeight: '600',
     cursor: 'pointer',
     marginTop: '0.5rem',
-  },
-  guestBtn: {
-    display: 'block', width: '100%', padding: '0.75rem', marginTop: '0.75rem',
-    backgroundColor: '#fff', color: '#374151', border: '1px solid #d1d5db',
-    borderRadius: '8px', fontSize: '1rem', cursor: 'pointer',
   },
   footer: {
     marginTop: '1.25rem',

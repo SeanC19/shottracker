@@ -33,9 +33,8 @@ export default function App() {
 
   if (session === undefined) return null
 
-  const isAnonymous = session?.user?.is_anonymous ?? false
   const auth = (el) => session ? el : <Navigate to="/login" />
-  const guest = (el) => (!session || isAnonymous) ? el : <Navigate to="/" />
+  const guest = (el) => session ? <Navigate to="/" /> : el
 
   return (
     <BrowserRouter>

@@ -1,15 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
 
 const CATEGORIES = ['General', 'Bug Report', 'Feature Request']
 
 export default function Account() {
-  const navigate = useNavigate()
   const [profile, setProfile] = useState(null)
   const [email, setEmail] = useState('')
   const [userId, setUserId] = useState(null)
-  const [isAnonymous, setIsAnonymous] = useState(false)
 
   const [rating, setRating] = useState(null)
   const [category, setCategory] = useState('General')
@@ -26,7 +23,6 @@ export default function Account() {
     const { data: { user } } = await supabase.auth.getUser()
     setEmail(user?.email || '')
     setUserId(user?.id || null)
-    setIsAnonymous(user?.is_anonymous ?? false)
 
     const { data } = await supabase
       .from('profiles')
@@ -70,30 +66,16 @@ export default function Account() {
       </div>
 
       <div style={s.content}>
-        {/* Save data banner for guests */}
-        {isAnonymous && (
-          <div style={s.saveBanner}>
-            <span style={s.saveText}>Create an account to save your data permanently.</span>
-            <button onClick={() => navigate('/signup')} style={s.saveBtn}>Save Data</button>
-          </div>
-        )}
-
         {/* Profile card */}
         <div style={s.card}>
           <div style={s.avatar}>
-            {isAnonymous ? 'G' : (profile?.display_name || email || '?')[0].toUpperCase()}
+            {(profile?.display_name || email || '?')[0].toUpperCase()}
           </div>
           <div style={s.info}>
-            {isAnonymous ? (
-              <span style={s.name}>Guest</span>
-            ) : (
-              <>
-                {profile?.display_name && (
-                  <span style={s.name}>{profile.display_name}</span>
-                )}
-                <span style={s.email}>{email}</span>
-              </>
+            {profile?.display_name && (
+              <span style={s.name}>{profile.display_name}</span>
             )}
+            <span style={s.email}>{email}</span>
           </div>
         </div>
 
@@ -170,13 +152,11 @@ export default function Account() {
         </div>
 
         {/* Sign out */}
-        {!isAnonymous && (
-          <div style={s.section}>
-            <button onClick={handleSignOut} style={s.signOutBtn}>
-              Sign Out
-            </button>
-          </div>
-        )}
+        <div style={s.section}>
+          <button onClick={handleSignOut} style={s.signOutBtn}>
+            Sign Out
+          </button>
+        </div>
 
         <p style={s.version}>ShotMap · v0.1</p>
       </div>
@@ -192,17 +172,6 @@ const s = {
   },
   title: { fontSize: '1.25rem', fontWeight: '700', margin: 0, color: '#111' },
   content: { maxWidth: '500px', margin: '0 auto', padding: '1.5rem' },
-  saveBanner: {
-    backgroundColor: '#fefce8', border: '1px solid #fde68a', borderRadius: '10px',
-    padding: '0.75rem 1rem', display: 'flex', justifyContent: 'space-between',
-    alignItems: 'center', marginBottom: '1rem', gap: '0.75rem',
-  },
-  saveText: { fontSize: '0.875rem', color: '#92400e', flex: 1 },
-  saveBtn: {
-    padding: '0.4rem 0.9rem', backgroundColor: '#d97706', color: '#fff',
-    border: 'none', borderRadius: '7px', fontSize: '0.875rem',
-    fontWeight: '600', cursor: 'pointer', flexShrink: 0,
-  },
   card: {
     backgroundColor: '#fff', borderRadius: '12px', padding: '1.25rem',
     display: 'flex', alignItems: 'center', gap: '1rem',
