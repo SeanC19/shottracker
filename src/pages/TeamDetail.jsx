@@ -73,6 +73,11 @@ export default function TeamDetail() {
     setPlayers(prev => prev.filter(p => p.id !== playerId))
   }
 
+  async function removeGame(gameId) {
+    await supabase.from('games').delete().eq('id', gameId)
+    setGames(prev => prev.filter(g => g.id !== gameId))
+  }
+
   function startEditPlayer(player) {
     setEditingPlayerId(player.id)
     setEditName(player.name)
@@ -271,6 +276,12 @@ export default function TeamDetail() {
                     onClick={e => { e.stopPropagation(); navigate(`/games/${game.id}/edit`) }}
                   >
                     Edit
+                  </button>
+                  <button
+                    style={styles.removeBtn}
+                    onClick={e => { e.stopPropagation(); removeGame(game.id) }}
+                  >
+                    Remove
                   </button>
                   <span style={styles.arrow}>→</span>
                 </button>
