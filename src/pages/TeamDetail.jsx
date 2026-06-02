@@ -271,7 +271,7 @@ const styles = {
   playerNameText: { fontWeight: '500', fontSize: '0.95rem', color: '#111' },
   position: { fontSize: '0.8rem', color: '#71717a', textTransform: 'capitalize' },
   removeBtn: { background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '0.8rem' },
-  gameList: { display: 'flex', flexDirection: 'column', gap: '0.5rem' },
+  gameList: { display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '400px', overflowY: 'auto' },
   gameCard: {
     backgroundColor: '#fff', borderRadius: '10px', padding: '1rem',
     border: '1px solid #e5e7eb', cursor: 'pointer',

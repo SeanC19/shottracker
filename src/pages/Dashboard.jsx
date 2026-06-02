@@ -100,9 +100,11 @@ export default function Dashboard() {
 
 const styles = {
   container: {
-    minHeight: '100vh',
+    height: '100%',
     backgroundColor: '#f4f4f5',
-    paddingBottom: '80px',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
   },
   header: {
     backgroundColor: '#fff',
@@ -126,9 +128,9 @@ const styles = {
     fontSize: '0.875rem',
   },
   content: {
-    maxWidth: '600px',
-    margin: '0 auto',
     padding: '1.5rem',
+    flex: 1,
+    overflowY: 'auto',
   },
   sectionHeader: {
     display: 'flex',
