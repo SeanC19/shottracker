@@ -4,7 +4,7 @@ import { supabase } from '../supabase'
 import rinkImg from '../assets/rink.png'
 
 const RESULTS = ['Goal', 'On Target', 'Missed', 'Blocked']
-const SHOT_TYPES = ['Wrist', 'Slap', 'Snap', 'Backhand', 'Tip', 'Deflection']
+const SHOT_TYPES = ['Wrist', 'Slap', 'Snap', 'Backhand', 'Tip']
 
 const RESULT_COLORS = {
   'Goal': '#16a34a',
@@ -183,15 +183,18 @@ export default function GameSession() {
         )}
 
         {/* Shot type row */}
-        <div style={s.typeRow}>
-          <span style={s.typeLabel}>Shot type:</span>
+        <div style={s.playerGrid}>
           {SHOT_TYPES.map(t => (
             <button
               key={t}
-              style={{ ...s.typeBtn, ...(selectedType === t ? s.typeBtnActive : {}) }}
+              style={{
+                ...s.playerBtn,
+                backgroundColor: selectedType === t ? '#2563eb' : '#f4f4f5',
+                color: selectedType === t ? '#fff' : '#111',
+              }}
               onClick={() => setSelectedType(prev => prev === t ? null : t)}
             >
-              {t}
+              <span style={s.playerNameBtn}>{t}</span>
             </button>
           ))}
         </div>
@@ -305,13 +308,6 @@ const s = {
     display: 'flex', flexDirection: 'column', gap: '0.6rem',
   },
   noShotPrompt: { textAlign: 'center', color: '#555', fontSize: '0.78rem', padding: '0.25rem 0' },
-  typeRow: { display: 'flex', gap: '0.35rem', alignItems: 'center', flexWrap: 'wrap' },
-  typeLabel: { fontSize: '0.75rem', color: '#888', flexShrink: 0 },
-  typeBtn: {
-    padding: '0.25rem 0.6rem', borderRadius: '6px', border: '1px solid #333',
-    backgroundColor: '#2a2a2a', color: '#aaa', fontSize: '0.75rem', cursor: 'pointer',
-  },
-  typeBtnActive: { backgroundColor: '#374151', color: '#fff', border: '1px solid #555' },
   resultRow: { display: 'flex', gap: '0.4rem' },
   resultBtn: {
     flex: 1, padding: '0.5rem 0.25rem', borderRadius: '8px',
