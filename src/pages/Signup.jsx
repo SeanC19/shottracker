@@ -59,7 +59,7 @@ export default function Signup() {
               value={displayName}
               onChange={e => setDisplayName(e.target.value)}
               style={styles.input}
-              placeholder="Sean Conley"
+              placeholder="Your name"
               required
             />
           </div>
