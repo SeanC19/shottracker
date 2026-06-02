@@ -13,30 +13,14 @@ export default function JoinGame() {
     setLoading(true)
     setError(null)
 
-    // Find the team by join code (case insensitive)
-    const { data: team, error: teamError } = await supabase
-      .from('teams')
+    const { data: game, error: gameError } = await supabase
+      .from('games')
       .select('*')
       .ilike('join_code', code.trim())
       .single()
 
-    if (teamError || !team) {
-      setError('No team found with that code. Check the code and try again.')
-      setLoading(false)
-      return
-    }
-
-    // Find the most recent game for that team
-    const { data: game, error: gameError } = await supabase
-      .from('games')
-      .select('*')
-      .eq('team_id', team.id)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .single()
-
     if (gameError || !game) {
-      setError('No active game found for that team.')
+      setError('No game found with that code. Check the code and try again.')
       setLoading(false)
       return
     }

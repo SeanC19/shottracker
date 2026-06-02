@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../supabase'
+import { generateJoinCode } from '../utils/joinCode'
 
 export default function CreateGame() {
   const { teamId } = useParams()
@@ -24,6 +25,7 @@ export default function CreateGame() {
         opponent,
         location: location || null,
         game_date: gameDate,
+        join_code: generateJoinCode(opponent),
       })
       .select()
       .single()

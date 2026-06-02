@@ -264,6 +264,9 @@ export default function TeamDetail() {
                     </span>
                     {game.location && <span style={styles.location}>{game.location}</span>}
                   </div>
+                  {game.join_code && (
+                    <span style={styles.gameCode}>{game.join_code}</span>
+                  )}
                   <button
                     style={styles.editRowBtn}
                     onClick={e => { e.stopPropagation(); navigate(`/games/${game.id}/edit`) }}
@@ -362,5 +365,10 @@ const styles = {
   opponent: { fontWeight: '600', fontSize: '0.95rem', color: '#111' },
   gameDate: { fontSize: '0.8rem', color: '#71717a' },
   location: { fontSize: '0.8rem', color: '#71717a' },
+  gameCode: {
+    fontSize: '0.7rem', fontWeight: '700', color: '#2563eb',
+    backgroundColor: '#eff6ff', padding: '0.15rem 0.4rem',
+    borderRadius: '5px', letterSpacing: '0.05em', flexShrink: 0,
+  },
   arrow: { color: '#d1d5db', fontSize: '1rem' },
 }

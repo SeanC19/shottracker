@@ -41,6 +41,7 @@ export default function GameSession() {
   const [selectedResult, setSelectedResult] = useState('On Target')
   const [selectedType, setSelectedType] = useState('Wrist')
   const [saving, setSaving] = useState(false)
+  const [codeCopied, setCodeCopied] = useState(false)
 
   useEffect(() => {
     fetchAll()
@@ -113,11 +114,20 @@ export default function GameSession() {
           <span style={s.matchup}>{team?.name} vs {game.opponent}</span>
           <span style={s.stats}>{shots.length} shots · {goalCount} goals · {onTargetCount} on target</span>
         </div>
+        {game.join_code && (
+          <button
+            style={s.joinCodeChip}
+            onClick={() => {
+              navigator.clipboard.writeText(game.join_code)
+              setCodeCopied(true)
+              setTimeout(() => setCodeCopied(false), 2000)
+            }}
+          >
+            {codeCopied ? '✓ Copied' : game.join_code}
+          </button>
+        )}
         <button onClick={() => navigate(`/games/${id}/edit`)} style={s.editBtn}>Edit</button>
-        <button
-          onClick={() => navigate(`/report/${game.share_token}`)}
-          style={s.reportBtn}
-        >
+        <button onClick={() => navigate(`/report/${game.share_token}`)} style={s.reportBtn}>
           Report
         </button>
       </div>
@@ -273,6 +283,11 @@ const s = {
   headerInfo: { flex: 1, display: 'flex', flexDirection: 'column', gap: '0.1rem' },
   matchup: { fontSize: '0.9rem', fontWeight: '600', color: '#fff' },
   stats: { fontSize: '0.75rem', color: '#888' },
+  joinCodeChip: {
+    padding: '0.25rem 0.5rem', backgroundColor: '#2a2a2a', color: '#f59e0b',
+    border: '1px solid #444', borderRadius: '6px', fontSize: '0.75rem',
+    fontWeight: '700', letterSpacing: '0.05em', cursor: 'pointer', flexShrink: 0,
+  },
   editBtn: {
     padding: '0.35rem 0.75rem', background: 'none', color: '#aaa',
     border: '1px solid #444', borderRadius: '6px', fontSize: '0.8rem',
