@@ -118,10 +118,7 @@ export default function TeamDetail() {
     <div style={styles.container}>
       <div style={styles.header}>
         <button onClick={() => navigate('/')} style={styles.back}>← Back</button>
-        <div style={styles.headerInfo}>
-          <h1 style={styles.teamName}>{team.name}</h1>
-        </div>
-        <button onClick={() => navigate(`/teams/${id}/edit`)} style={styles.editBtn}>Edit</button>
+        <h1 style={styles.teamName}>{team.name}</h1>
       </div>
 
       <div style={styles.content}>
@@ -305,13 +302,7 @@ const styles = {
     background: 'none', border: 'none', color: '#2563eb',
     cursor: 'pointer', fontSize: '0.875rem', padding: 0, flexShrink: 0,
   },
-  headerInfo: { flex: 1 },
   teamName: { fontSize: '1.25rem', fontWeight: '700', margin: '0 0 0.15rem', color: '#111' },
-  editBtn: {
-    background: 'none', border: '1px solid #d1d5db', color: '#374151',
-    cursor: 'pointer', fontSize: '0.8rem', padding: '0.3rem 0.7rem',
-    borderRadius: '6px', flexShrink: 0,
-  },
   content: { padding: '1.5rem', flex: 1, overflowY: 'auto', minHeight: 0 },
   tabs: { display: 'flex', gap: '0.5rem', marginBottom: '1.25rem' },
   tab: {

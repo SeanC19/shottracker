@@ -87,7 +87,10 @@ export default function Dashboard() {
               <h3 style={styles.teamName}>{team.name}</h3>
               <div style={styles.cardBottom}>
                 <p style={styles.sport}>{team.sport}</p>
-                <button onClick={e => removeTeam(e, team.id)} style={styles.removeBtn}>Remove</button>
+                <div style={styles.cardActions}>
+                  <button onClick={e => { e.stopPropagation(); navigate(`/teams/${team.id}/edit`) }} style={styles.editBtn}>Edit</button>
+                  <button onClick={e => removeTeam(e, team.id)} style={styles.removeBtn}>Remove</button>
+                </div>
               </div>
             </div>
           ))}
@@ -223,8 +226,7 @@ const styles = {
     margin: 0,
     textTransform: 'capitalize',
   },
-  removeBtn: {
-    background: 'none', border: 'none', color: '#ef4444',
-    cursor: 'pointer', fontSize: '0.8rem', padding: 0,
-  },
+  cardActions: { display: 'flex', gap: '0.75rem', alignItems: 'center' },
+  editBtn: { background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.8rem', padding: 0 },
+  removeBtn: { background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '0.8rem', padding: 0 },
 }
