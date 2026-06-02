@@ -104,6 +104,8 @@ export default function GameSession() {
 
   const goalCount = shots.filter(sh => sh.result === 'goal').length
   const onTargetCount = shots.filter(sh => sh.result === 'on_target').length
+  const missedCount = shots.filter(sh => sh.result === 'missed').length
+  const blockedCount = shots.filter(sh => sh.result === 'blocked').length
 
   return (
     <div style={s.page}>
@@ -181,6 +183,8 @@ export default function GameSession() {
         <span style={s.statItem}><span style={s.statNum}>{shots.length}</span> shots</span>
         <span style={s.statItem}><span style={{ ...s.statNum, color: '#16a34a' }}>{goalCount}</span> goals</span>
         <span style={s.statItem}><span style={{ ...s.statNum, color: '#2563eb' }}>{onTargetCount}</span> on target</span>
+        <span style={s.statItem}><span style={{ ...s.statNum, color: '#9ca3af' }}>{missedCount}</span> missed</span>
+        <span style={s.statItem}><span style={{ ...s.statNum, color: '#dc2626' }}>{blockedCount}</span> blocked</span>
       </div>
 
       {/* Legend */}
