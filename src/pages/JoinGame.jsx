@@ -40,7 +40,7 @@ export default function JoinGame() {
             value={code}
             onChange={e => setCode(e.target.value)}
             style={styles.input}
-            placeholder="HAWKS42"
+            placeholder="Join Code"
             maxLength={10}
             required
           />
