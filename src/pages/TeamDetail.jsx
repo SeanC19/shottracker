@@ -273,7 +273,7 @@ export default function TeamDetail() {
                       style={{ ...styles.gameCode, ...(isPro ? {} : styles.gameCodeLocked) }}
                       onClick={e => { e.stopPropagation(); if (!isPro) navigate('/upgrade') }}
                     >
-                      {isPro ? game.game_code : '🔒'}
+                      {isPro ? game.game_code : '🔒 Code'}
                     </button>
                   )}
                   <button
