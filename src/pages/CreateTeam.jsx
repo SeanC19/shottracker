@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
 import { generateJoinCode } from '../utils/joinCode'
@@ -10,7 +10,21 @@ export default function CreateTeam() {
   const [sport, setSport] = useState('hockey')
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [blocked, setBlocked] = useState(false)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    async function checkLimit() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user?.is_anonymous) return
+      const { count } = await supabase
+        .from('teams')
+        .select('id', { count: 'exact', head: true })
+        .eq('owner_id', user.id)
+      if (count >= 1) setBlocked(true)
+    }
+    checkLimit()
+  }, [])
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -33,6 +47,20 @@ export default function CreateTeam() {
       navigate(`/teams/${data.id}`)
     }
   }
+
+  if (blocked) return (
+    <div style={styles.container}>
+      <div style={styles.card}>
+        <button onClick={() => navigate('/')} style={styles.back}>← Back</button>
+        <h1 style={styles.title}>Multiple Teams</h1>
+        <p style={styles.wallText}>
+          Create a free account to manage more than one team and keep your data safe across devices.
+        </p>
+        <button onClick={() => navigate('/signup')} style={styles.button}>Create Account</button>
+        <button onClick={() => navigate('/login')} style={styles.secondaryBtn}>Sign in to existing account</button>
+      </div>
+    </div>
+  )
 
   return (
     <div style={styles.container}>
@@ -134,6 +162,12 @@ const styles = {
     outline: 'none',
     backgroundColor: '#fff',
     color: '#111',
+  },
+  wallText: { color: '#374151', fontSize: '0.95rem', margin: '0 0 1.5rem', lineHeight: '1.5' },
+  secondaryBtn: {
+    display: 'block', width: '100%', padding: '0.75rem', marginTop: '0.75rem',
+    backgroundColor: '#fff', color: '#374151', border: '1px solid #d1d5db',
+    borderRadius: '8px', fontSize: '1rem', cursor: 'pointer',
   },
   error: {
     color: '#dc2626',

@@ -5,6 +5,7 @@ import { supabase } from '../supabase'
 export default function Dashboard() {
   const [teams, setTeams] = useState([])
   const [loading, setLoading] = useState(true)
+  const [isAnonymous, setIsAnonymous] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -13,6 +14,7 @@ export default function Dashboard() {
 
   async function fetchTeams() {
     const { data: { user } } = await supabase.auth.getUser()
+    setIsAnonymous(user?.is_anonymous ?? false)
 
     const { data, error } = await supabase
       .from('teams')
@@ -22,6 +24,14 @@ export default function Dashboard() {
 
     if (!error) setTeams(data)
     setLoading(false)
+  }
+
+  function handleNewTeam() {
+    if (isAnonymous && teams.length >= 1) {
+      navigate('/signup')
+    } else {
+      navigate('/teams/new')
+    }
   }
 
   async function handleSignOut() {
@@ -45,10 +55,19 @@ export default function Dashboard() {
     <div style={styles.container}>
       <div style={styles.header}>
         <h1 style={styles.title}>ShotMap</h1>
-        <button onClick={handleSignOut} style={styles.signOutBtn}>Sign out</button>
+        {!isAnonymous && (
+          <button onClick={handleSignOut} style={styles.signOutBtn}>Sign out</button>
+        )}
       </div>
 
       <div style={styles.content}>
+        {isAnonymous && (
+          <div style={styles.saveBanner}>
+            <span style={styles.saveText}>Create an account to save your data permanently.</span>
+            <button onClick={() => navigate('/signup')} style={styles.saveBtn}>Save Data</button>
+          </div>
+        )}
+
         <div style={styles.joinBanner}>
           <span style={styles.joinText}>Have a game code?</span>
           <button onClick={() => navigate('/join')} style={styles.joinBtn}>
@@ -58,7 +77,7 @@ export default function Dashboard() {
 
         <div style={styles.sectionHeader}>
           <h2 style={styles.sectionTitle}>Your Teams</h2>
-          <button onClick={() => navigate('/teams/new')} style={styles.newBtn}>
+          <button onClick={handleNewTeam} style={styles.newBtn}>
             + New Team
           </button>
         </div>
@@ -68,7 +87,7 @@ export default function Dashboard() {
         {!loading && teams.length === 0 && (
           <div style={styles.empty}>
             <p style={styles.emptyText}>No teams yet.</p>
-            <button onClick={() => navigate('/teams/new')} style={styles.newBtn}>
+            <button onClick={handleNewTeam} style={styles.newBtn}>
               Create your first team
             </button>
           </div>
@@ -146,6 +165,17 @@ const styles = {
     fontWeight: '600',
     margin: 0,
     color: '#111',
+  },
+  saveBanner: {
+    backgroundColor: '#fefce8', border: '1px solid #fde68a', borderRadius: '10px',
+    padding: '0.75rem 1rem', display: 'flex', justifyContent: 'space-between',
+    alignItems: 'center', marginBottom: '1rem', gap: '0.75rem',
+  },
+  saveText: { fontSize: '0.875rem', color: '#92400e', flex: 1 },
+  saveBtn: {
+    padding: '0.4rem 0.9rem', backgroundColor: '#d97706', color: '#fff',
+    border: 'none', borderRadius: '7px', fontSize: '0.875rem',
+    fontWeight: '600', cursor: 'pointer', flexShrink: 0,
   },
   newBtn: {
     padding: '0.5rem 1rem',
