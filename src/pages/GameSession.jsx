@@ -178,58 +178,58 @@ export default function GameSession() {
 
       {/* Bottom sheet — always visible */}
       <div style={s.sheet}>
-        {pendingShot && (
-          <>
-            {/* Shot type row */}
-            <div style={s.typeRow}>
-              <span style={s.typeLabel}>Shot type:</span>
-              {SHOT_TYPES.map(t => (
-                <button
-                  key={t}
-                  style={{ ...s.typeBtn, ...(selectedType === t ? s.typeBtnActive : {}) }}
-                  onClick={() => setSelectedType(prev => prev === t ? null : t)}
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
-
-            {/* Result row */}
-            <div style={s.resultRow}>
-              {RESULTS.map(r => (
-                <button
-                  key={r}
-                  style={{
-                    ...s.resultBtn,
-                    backgroundColor: selectedResult === r ? RESULT_COLORS[r] : '#f4f4f5',
-                    color: selectedResult === r ? '#fff' : '#374151',
-                  }}
-                  onClick={() => setSelectedResult(prev => prev === r ? null : r)}
-                >
-                  {r}
-                </button>
-              ))}
-            </div>
-
-            {/* Player grid */}
-            <div style={s.playerGrid}>
-              {players.map(p => (
-                <button
-                  key={p.id}
-                  style={{
-                    ...s.playerBtn,
-                    backgroundColor: selectedPlayer?.id === p.id ? '#2563eb' : '#f4f4f5',
-                    color: selectedPlayer?.id === p.id ? '#fff' : '#111',
-                  }}
-                  onClick={() => setSelectedPlayer(prev => prev?.id === p.id ? null : p)}
-                >
-                  <span style={s.playerNum}>#{p.jersey_number ?? '—'}</span>
-                  <span style={s.playerNameBtn}>{p.name.split(' ')[0]}</span>
-                </button>
-              ))}
-            </div>
-          </>
+        {!pendingShot && (
+          <div style={s.noShotPrompt}>Tap the rink above to place a shot</div>
         )}
+
+        {/* Shot type row */}
+        <div style={s.typeRow}>
+          <span style={s.typeLabel}>Shot type:</span>
+          {SHOT_TYPES.map(t => (
+            <button
+              key={t}
+              style={{ ...s.typeBtn, ...(selectedType === t ? s.typeBtnActive : {}) }}
+              onClick={() => setSelectedType(prev => prev === t ? null : t)}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+
+        {/* Result row */}
+        <div style={s.resultRow}>
+          {RESULTS.map(r => (
+            <button
+              key={r}
+              style={{
+                ...s.resultBtn,
+                backgroundColor: selectedResult === r ? RESULT_COLORS[r] : '#f4f4f5',
+                color: selectedResult === r ? '#fff' : '#374151',
+              }}
+              onClick={() => setSelectedResult(prev => prev === r ? null : r)}
+            >
+              {r}
+            </button>
+          ))}
+        </div>
+
+        {/* Player grid */}
+        <div style={s.playerGrid}>
+          {players.map(p => (
+            <button
+              key={p.id}
+              style={{
+                ...s.playerBtn,
+                backgroundColor: selectedPlayer?.id === p.id ? '#2563eb' : '#f4f4f5',
+                color: selectedPlayer?.id === p.id ? '#fff' : '#111',
+              }}
+              onClick={() => setSelectedPlayer(prev => prev?.id === p.id ? null : p)}
+            >
+              <span style={s.playerNum}>#{p.jersey_number ?? '—'}</span>
+              <span style={s.playerNameBtn}>{p.name.split(' ')[0]}</span>
+            </button>
+          ))}
+        </div>
 
         {/* Actions — always visible */}
         <div style={s.actions}>
@@ -304,6 +304,7 @@ const s = {
     padding: '0.75rem', paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))',
     display: 'flex', flexDirection: 'column', gap: '0.6rem',
   },
+  noShotPrompt: { textAlign: 'center', color: '#555', fontSize: '0.78rem', padding: '0.25rem 0' },
   typeRow: { display: 'flex', gap: '0.35rem', alignItems: 'center', flexWrap: 'wrap' },
   typeLabel: { fontSize: '0.75rem', color: '#888', flexShrink: 0 },
   typeBtn: {
