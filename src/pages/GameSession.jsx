@@ -13,6 +13,17 @@ const RESULT_COLORS = {
   'Blocked': '#dc2626',
 }
 
+const RESULT_COLOR_MAP = {
+  goal: '#16a34a',
+  on_target: '#2563eb',
+  missed: '#71717a',
+  blocked: '#dc2626',
+}
+
+function getResultColor(result) {
+  return RESULT_COLOR_MAP[result] || '#71717a'
+}
+
 export default function GameSession() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -25,7 +36,7 @@ export default function GameSession() {
   const [loading, setLoading] = useState(true)
 
   // Shot entry state
-  const [pendingShot, setPendingShot] = useState(null) // {x_pct, y_pct}
+  const [pendingShot, setPendingShot] = useState(null)
   const [selectedPlayer, setSelectedPlayer] = useState(null)
   const [selectedResult, setSelectedResult] = useState('On Target')
   const [selectedType, setSelectedType] = useState('Wrist')
@@ -87,16 +98,6 @@ export default function GameSession() {
     setPendingShot(null)
   }
 
-  function getResultColor(result) {
-    const map = {
-      goal: '#16a34a',
-      on_target: '#2563eb',
-      missed: '#71717a',
-      blocked: '#dc2626',
-    }
-    return map[result] || '#71717a'
-  }
-
   if (loading) return <div style={s.loading}>Loading...</div>
   if (!game) return <div style={s.loading}>Game not found.</div>
 
@@ -120,17 +121,15 @@ export default function GameSession() {
         </button>
       </div>
 
-      {/* Tap instruction */}
-      {!pendingShot && (
-        <div style={s.instruction}>Tap the rink to log a shot</div>
-      )}
-
       {/* Rink */}
       <div style={s.rinkWrap}>
         <div
           ref={rinkRef}
           style={s.rink}
+          role="button"
+          tabIndex={0}
           onClick={handleRinkTap}
+          onKeyDown={e => e.key === 'Enter' && handleRinkTap(e)}
         >
           <img src={rinkImg} alt="hockey rink" style={{ width: "100%", display: "block" }} draggable={false} />
 
@@ -177,74 +176,73 @@ export default function GameSession() {
         ))}
       </div>
 
-      {/* Bottom sheet */}
-      {pendingShot && (
-        <div style={s.sheet}>
-          {/* Shot type row */}
-          <div style={s.typeRow}>
-            <span style={s.typeLabel}>Shot type:</span>
-            {SHOT_TYPES.map(t => (
-              <button
-                key={t}
-                style={{ ...s.typeBtn, ...(selectedType === t ? s.typeBtnActive : {}) }}
-                onClick={() => setSelectedType(prev => prev === t ? null : t)}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
+      {/* Bottom sheet — always visible */}
+      <div style={s.sheet}>
+        {pendingShot && (
+          <>
+            {/* Shot type row */}
+            <div style={s.typeRow}>
+              <span style={s.typeLabel}>Shot type:</span>
+              {SHOT_TYPES.map(t => (
+                <button
+                  key={t}
+                  style={{ ...s.typeBtn, ...(selectedType === t ? s.typeBtnActive : {}) }}
+                  onClick={() => setSelectedType(prev => prev === t ? null : t)}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
 
-          {/* Result row */}
-          <div style={s.resultRow}>
-            {RESULTS.map(r => (
-              <button
-                key={r}
-                style={{
-                  ...s.resultBtn,
-                  backgroundColor: selectedResult === r ? RESULT_COLORS[r] : '#f4f4f5',
-                  color: selectedResult === r ? '#fff' : '#374151',
-                }}
-                onClick={() => setSelectedResult(prev => prev === r ? null : r)}
-              >
-                {r}
-              </button>
-            ))}
-          </div>
+            {/* Result row */}
+            <div style={s.resultRow}>
+              {RESULTS.map(r => (
+                <button
+                  key={r}
+                  style={{
+                    ...s.resultBtn,
+                    backgroundColor: selectedResult === r ? RESULT_COLORS[r] : '#f4f4f5',
+                    color: selectedResult === r ? '#fff' : '#374151',
+                  }}
+                  onClick={() => setSelectedResult(prev => prev === r ? null : r)}
+                >
+                  {r}
+                </button>
+              ))}
+            </div>
 
-          {/* Player grid */}
-          <div style={s.playerGrid}>
-            {players.map(p => (
-              <button
-                key={p.id}
-                style={{
-                  ...s.playerBtn,
-                  backgroundColor: selectedPlayer?.id === p.id ? '#2563eb' : '#f4f4f5',
-                  color: selectedPlayer?.id === p.id ? '#fff' : '#111',
-                }}
-                onClick={() => setSelectedPlayer(prev => prev?.id === p.id ? null : p)}
-              >
-                <span style={s.playerNum}>#{p.jersey_number ?? '—'}</span>
-                <span style={s.playerNameBtn}>{p.name.split(' ')[0]}</span>
-              </button>
-            ))}
-          </div>
+            {/* Player grid */}
+            <div style={s.playerGrid}>
+              {players.map(p => (
+                <button
+                  key={p.id}
+                  style={{
+                    ...s.playerBtn,
+                    backgroundColor: selectedPlayer?.id === p.id ? '#2563eb' : '#f4f4f5',
+                    color: selectedPlayer?.id === p.id ? '#fff' : '#111',
+                  }}
+                  onClick={() => setSelectedPlayer(prev => prev?.id === p.id ? null : p)}
+                >
+                  <span style={s.playerNum}>#{p.jersey_number ?? '—'}</span>
+                  <span style={s.playerNameBtn}>{p.name.split(' ')[0]}</span>
+                </button>
+              ))}
+            </div>
+          </>
+        )}
 
-          {/* Actions */}
-          <div style={s.actions}>
-            <button onClick={cancelShot} style={s.cancelBtn}>Cancel</button>
-            <button
-              onClick={saveShot}
-              style={{
-                ...s.saveBtn,
-                opacity: !selectedPlayer ? 0.5 : 1,
-              }}
-              disabled={!selectedPlayer || saving}
-            >
-              {saving ? 'Saving...' : 'Log Shot'}
-            </button>
-          </div>
+        {/* Actions — always visible */}
+        <div style={s.actions}>
+          <button onClick={cancelShot} style={s.cancelBtn} disabled={!pendingShot}>Cancel</button>
+          <button
+            onClick={saveShot}
+            style={{ ...s.saveBtn, opacity: (!pendingShot || !selectedPlayer) ? 0.5 : 1 }}
+            disabled={!pendingShot || !selectedPlayer || saving}
+          >
+            {saving ? 'Saving...' : 'Log Shot'}
+          </button>
         </div>
-      )}
+      </div>
 
       <style>{`
         @keyframes pulse {
