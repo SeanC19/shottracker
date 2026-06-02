@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
 
 const CATEGORIES = ['General', 'Bug Report', 'Feature Request']
 
 export default function Account() {
+  const navigate = useNavigate()
   const [profile, setProfile] = useState(null)
   const [email, setEmail] = useState('')
   const [userId, setUserId] = useState(null)
@@ -68,6 +70,14 @@ export default function Account() {
       </div>
 
       <div style={s.content}>
+        {/* Save data banner for guests */}
+        {isAnonymous && (
+          <div style={s.saveBanner}>
+            <span style={s.saveText}>Create an account to save your data permanently.</span>
+            <button onClick={() => navigate('/signup')} style={s.saveBtn}>Save Data</button>
+          </div>
+        )}
+
         {/* Profile card */}
         <div style={s.card}>
           <div style={s.avatar}>
@@ -182,6 +192,17 @@ const s = {
   },
   title: { fontSize: '1.25rem', fontWeight: '700', margin: 0, color: '#111' },
   content: { maxWidth: '500px', margin: '0 auto', padding: '1.5rem' },
+  saveBanner: {
+    backgroundColor: '#fefce8', border: '1px solid #fde68a', borderRadius: '10px',
+    padding: '0.75rem 1rem', display: 'flex', justifyContent: 'space-between',
+    alignItems: 'center', marginBottom: '1rem', gap: '0.75rem',
+  },
+  saveText: { fontSize: '0.875rem', color: '#92400e', flex: 1 },
+  saveBtn: {
+    padding: '0.4rem 0.9rem', backgroundColor: '#d97706', color: '#fff',
+    border: 'none', borderRadius: '7px', fontSize: '0.875rem',
+    fontWeight: '600', cursor: 'pointer', flexShrink: 0,
+  },
   card: {
     backgroundColor: '#fff', borderRadius: '12px', padding: '1.25rem',
     display: 'flex', alignItems: 'center', gap: '1rem',
