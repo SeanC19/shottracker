@@ -32,7 +32,7 @@ export default function JoinGame() {
     <div style={styles.container}>
       <div style={styles.card}>
         <h1 style={styles.title}>Join a Game</h1>
-        <p style={styles.subtitle}>Enter the team's join code to start tracking shots.</p>
+        <p style={styles.subtitle}>Enter the game code to start tracking shots.</p>
 
         <form onSubmit={handleJoin} style={styles.form}>
           <input

@@ -50,7 +50,7 @@ export default function Dashboard() {
 
       <div style={styles.content}>
         <div style={styles.joinBanner}>
-          <span style={styles.joinText}>Have a join code?</span>
+          <span style={styles.joinText}>Have a game code?</span>
           <button onClick={() => navigate('/join')} style={styles.joinBtn}>
             Join a Game
           </button>
@@ -83,7 +83,6 @@ export default function Dashboard() {
             >
               <div style={styles.cardTop}>
                 <span style={styles.emoji}>{sportEmoji[team.sport] || '🏒'}</span>
-                <span style={styles.joinCode}>{team.join_code}</span>
               </div>
               <h3 style={styles.teamName}>{team.name}</h3>
               <div style={styles.cardBottom}>
@@ -206,15 +205,6 @@ const styles = {
   },
   emoji: {
     fontSize: '1.5rem',
-  },
-  joinCode: {
-    fontSize: '0.75rem',
-    fontWeight: '700',
-    color: '#2563eb',
-    backgroundColor: '#eff6ff',
-    padding: '0.2rem 0.5rem',
-    borderRadius: '6px',
-    letterSpacing: '0.05em',
   },
   teamName: {
     fontSize: '1.1rem',

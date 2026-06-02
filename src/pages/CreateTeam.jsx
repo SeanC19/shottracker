@@ -68,12 +68,6 @@ export default function CreateTeam() {
             </select>
           </div>
 
-          {name && (
-            <p style={styles.preview}>
-              Join code preview: <strong>{generateJoinCode(name)}</strong>
-            </p>
-          )}
-
           {error && <p style={styles.error}>{error}</p>}
 
           <button type="submit" style={styles.button} disabled={loading}>
@@ -140,11 +134,6 @@ const styles = {
     outline: 'none',
     backgroundColor: '#fff',
     color: '#111',
-  },
-  preview: {
-    fontSize: '0.875rem',
-    color: '#71717a',
-    margin: 0,
   },
   error: {
     color: '#dc2626',

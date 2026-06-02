@@ -115,7 +115,6 @@ export default function TeamDetail() {
         <button onClick={() => navigate('/')} style={styles.back}>← Back</button>
         <div style={styles.headerInfo}>
           <h1 style={styles.teamName}>{team.name}</h1>
-          <span style={styles.joinCode}>Join code: {team.join_code}</span>
         </div>
         <button onClick={() => navigate(`/teams/${id}/edit`)} style={styles.editBtn}>Edit</button>
       </div>
@@ -298,10 +297,6 @@ const styles = {
   },
   headerInfo: { flex: 1 },
   teamName: { fontSize: '1.25rem', fontWeight: '700', margin: '0 0 0.15rem', color: '#111' },
-  joinCode: {
-    fontSize: '0.8rem', color: '#2563eb', fontWeight: '600',
-    backgroundColor: '#eff6ff', padding: '0.15rem 0.4rem', borderRadius: '5px',
-  },
   editBtn: {
     background: 'none', border: '1px solid #d1d5db', color: '#374151',
     cursor: 'pointer', fontSize: '0.8rem', padding: '0.3rem 0.7rem',
