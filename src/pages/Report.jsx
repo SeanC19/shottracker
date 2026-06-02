@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
 import rinkImg from '../assets/rink.png'
-import { getUserPlan } from '../utils/plan'
 
 const RESULT_COLORS = {
   goal: '#16a34a',
@@ -31,7 +30,6 @@ export default function Report() {
 
   useEffect(() => {
     fetchReport()
-    getUserPlan().then(plan => setIsPro(plan === 'pro'))
   }, [token])
 
   async function fetchReport() {
@@ -53,11 +51,22 @@ export default function Report() {
     setTeam(teamRes.data)
     setShots(shotsRes.data || [])
     setPlayers(playersRes.data || [])
+
+    // Check owner's plan — report is public so we check the team owner, not the viewer
+    if (teamRes.data?.owner_id) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('plan')
+        .eq('id', teamRes.data.owner_id)
+        .single()
+      setIsPro(profile?.plan === 'pro')
+    }
+
     setLoading(false)
   }
 
   function copyLink() {
-    navigator.clipboard.writeText(window.location.href)
+    navigator.clipboard.writeText(globalThis.location.href)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
@@ -168,10 +177,16 @@ export default function Report() {
       </div>
 
       {/* Player breakdown — Pro only */}
-      {isPro && activePlayers.length > 0 && (
+      {activePlayers.length > 0 && (
         <div style={s.section}>
-          <h2 style={s.sectionTitle}>Player Breakdown</h2>
-          <div style={s.playerCards}>
+          <h2 style={s.sectionTitle}>{isPro ? '' : '🔒 '}Player Breakdown</h2>
+          {!isPro && (
+            <div style={s.proGate}>
+              <p style={s.proGateText}>Player stat breakdowns are a Pro feature.</p>
+              <a href="/upgrade" style={s.proGateBtn}>Upgrade to Pro</a>
+            </div>
+          )}
+          {isPro && <div style={s.playerCards}>
             {activePlayers.map(player => {
               const stats = getPlayerStats(player.id)
               return (
@@ -226,7 +241,7 @@ export default function Report() {
                 </div>
               )
             })}
-          </div>
+          </div>}
         </div>
       )}
 
@@ -307,6 +322,16 @@ const s = {
   playerStatLabel: { fontSize: '0.65rem', color: '#71717a' },
   miniRinkWrap: { borderRadius: '8px', overflow: 'hidden', border: '1px solid #e5e7eb' },
   miniRink: { position: 'relative', width: '100%' },
+  proGate: {
+    backgroundColor: '#f9fafb', borderRadius: '10px', padding: '1.5rem',
+    textAlign: 'center', border: '1px solid #e5e7eb', marginBottom: '0.75rem',
+  },
+  proGateText: { color: '#71717a', fontSize: '0.9rem', marginBottom: '0.75rem' },
+  proGateBtn: {
+    display: 'inline-block', padding: '0.5rem 1.25rem', backgroundColor: '#2563eb',
+    color: '#fff', borderRadius: '8px', fontSize: '0.875rem',
+    fontWeight: '600', textDecoration: 'none',
+  },
   empty: { textAlign: 'center', color: '#71717a', padding: '3rem 1rem' },
   footer: { textAlign: 'center', padding: '1.5rem', marginTop: '1rem' },
   footerText: { fontSize: '0.78rem', color: '#aaa' },

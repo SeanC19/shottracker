@@ -116,6 +116,9 @@ export default function GameSession() {
   const missedCount = shots.filter(sh => sh.result === 'missed').length
   const blockedCount = shots.filter(sh => sh.result === 'blocked').length
 
+  const proCodeLabel = codeCopied ? '✓ Copied' : game.game_code
+  const codeLabel = isPro ? proCodeLabel : '🔒 Code'
+
   return (
     <div style={s.page}>
       {/* Header */}
@@ -124,23 +127,24 @@ export default function GameSession() {
         <div style={s.headerInfo}>
           <span style={s.matchup}>{team?.name} vs {game.opponent}</span>
         </div>
-        {isPro && game.game_code && (
+        {game.game_code && (
           <button
-            style={s.joinCodeChip}
+            style={{ ...s.joinCodeChip, ...(isPro ? {} : s.locked) }}
             onClick={() => {
+              if (!isPro) { navigate('/upgrade'); return }
               navigator.clipboard.writeText(game.game_code)
               setCodeCopied(true)
               setTimeout(() => setCodeCopied(false), 2000)
             }}
           >
-            {codeCopied ? '✓ Copied' : game.game_code}
+            {codeLabel}
           </button>
         )}
         <button
           onClick={() => isPro ? navigate(`/report/${game.share_token}`) : navigate('/upgrade')}
-          style={s.reportBtn}
+          style={{ ...s.reportBtn, ...(!isPro && s.locked) }}
         >
-          Report
+          {isPro ? 'Report' : '🔒 Report'}
         </button>
       </div>
 
@@ -292,6 +296,7 @@ export default function GameSession() {
 const s = {
   page: { height: '100svh', backgroundColor: '#111', display: 'flex', flexDirection: 'column', overflow: 'hidden' },
   loading: { padding: '2rem', color: '#71717a' },
+  locked: { opacity: 0.6, cursor: 'pointer' },
   header: {
     backgroundColor: '#1a1a1a', padding: '0.75rem 1rem',
     display: 'flex', alignItems: 'center', gap: '0.75rem',
