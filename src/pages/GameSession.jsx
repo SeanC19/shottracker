@@ -307,13 +307,15 @@ const s = {
   },
   legend: {
     display: 'flex', gap: '0.75rem', justifyContent: 'center',
-    padding: '0.4rem', flexWrap: 'wrap',
+    padding: '0.4rem', paddingBottom: 'calc(0.4rem + env(safe-area-inset-bottom, 0px))',
+    flexWrap: 'wrap',
   },
   legendItem: { display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.72rem', color: '#aaa' },
   legendDot: { width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0 },
   sheet: {
     backgroundColor: '#1a1a1a', borderTop: '1px solid #333',
-    padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.6rem',
+    padding: '0.75rem', paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))',
+    display: 'flex', flexDirection: 'column', gap: '0.6rem',
   },
   typeRow: { display: 'flex', gap: '0.35rem', alignItems: 'center', flexWrap: 'wrap' },
   typeLabel: { fontSize: '0.75rem', color: '#888', flexShrink: 0 },
