@@ -303,7 +303,7 @@ const s = {
   legendDot: { width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0 },
   sheet: {
     backgroundColor: '#1a1a1a', borderTop: '1px solid #333',
-    padding: '0.75rem', paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))',
+    padding: '0.75rem', paddingBottom: 'calc(1rem + env(safe-area-inset-bottom, 80px))',
     display: 'flex', flexDirection: 'column', gap: '0.6rem',
   },
   typeRow: { display: 'flex', gap: '0.35rem', alignItems: 'center', flexWrap: 'wrap' },
