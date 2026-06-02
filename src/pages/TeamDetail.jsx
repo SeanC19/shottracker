@@ -11,7 +11,7 @@ export default function TeamDetail() {
   const [games, setGames] = useState([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
-  const [tab, setTab] = useState('roster')
+  const [tab, setTab] = useState('games')
 
   const [playerName, setPlayerName] = useState('')
   const [jerseyNumber, setJerseyNumber] = useState('')
