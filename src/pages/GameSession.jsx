@@ -53,13 +53,9 @@ export default function GameSession() {
   }
 
   function handleRinkTap(e) {
-    if (e.type === 'touchstart') e.preventDefault()
     const rect = rinkRef.current.getBoundingClientRect()
-    const x = e.clientX ?? e.touches?.[0]?.clientX
-    const y = e.clientY ?? e.touches?.[0]?.clientY
-    if (x === undefined) return
-    const x_pct = (x - rect.left) / rect.width
-    const y_pct = (y - rect.top) / rect.height
+    const x_pct = (e.clientX - rect.left) / rect.width
+    const y_pct = (e.clientY - rect.top) / rect.height
     setPendingShot({ x_pct, y_pct })
   }
 
@@ -135,7 +131,6 @@ export default function GameSession() {
           ref={rinkRef}
           style={s.rink}
           onClick={handleRinkTap}
-          onTouchStart={handleRinkTap}
         >
           <img src={rinkImg} alt="hockey rink" style={{ width: "100%", display: "block" }} draggable={false} />
 
@@ -192,7 +187,7 @@ export default function GameSession() {
               <button
                 key={t}
                 style={{ ...s.typeBtn, ...(selectedType === t ? s.typeBtnActive : {}) }}
-                onClick={() => setSelectedType(t)}
+                onClick={() => setSelectedType(prev => prev === t ? null : t)}
               >
                 {t}
               </button>
@@ -209,7 +204,7 @@ export default function GameSession() {
                   backgroundColor: selectedResult === r ? RESULT_COLORS[r] : '#f4f4f5',
                   color: selectedResult === r ? '#fff' : '#374151',
                 }}
-                onClick={() => setSelectedResult(r)}
+                onClick={() => setSelectedResult(prev => prev === r ? null : r)}
               >
                 {r}
               </button>
@@ -226,7 +221,7 @@ export default function GameSession() {
                   backgroundColor: selectedPlayer?.id === p.id ? '#2563eb' : '#f4f4f5',
                   color: selectedPlayer?.id === p.id ? '#fff' : '#111',
                 }}
-                onClick={() => setSelectedPlayer(p)}
+                onClick={() => setSelectedPlayer(prev => prev?.id === p.id ? null : p)}
               >
                 <span style={s.playerNum}>#{p.jersey_number ?? '—'}</span>
                 <span style={s.playerNameBtn}>{p.name.split(' ')[0]}</span>
@@ -292,7 +287,7 @@ const s = {
   rink: {
     position: 'relative', width: '100%', maxWidth: '560px',
     cursor: 'crosshair', userSelect: 'none', borderRadius: '12px',
-    boxShadow: '0 0 0 2px #333',
+    boxShadow: '0 0 0 2px #333', touchAction: 'manipulation',
   },
   dot: {
     position: 'absolute', borderRadius: '50%',
