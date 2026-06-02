@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { getUserPlan } from '../utils/plan'
 import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../supabase'
 import rinkImg from '../assets/rink.png'
@@ -42,9 +43,11 @@ export default function GameSession() {
   const [selectedType, setSelectedType] = useState('Wrist')
   const [saving, setSaving] = useState(false)
   const [codeCopied, setCodeCopied] = useState(false)
+  const [isPro, setIsPro] = useState(false)
 
   useEffect(() => {
     fetchAll()
+    getUserPlan().then(plan => setIsPro(plan === 'pro'))
   }, [id])
 
   async function fetchAll() {
@@ -121,7 +124,7 @@ export default function GameSession() {
         <div style={s.headerInfo}>
           <span style={s.matchup}>{team?.name} vs {game.opponent}</span>
         </div>
-        {game.game_code && (
+        {isPro && game.game_code && (
           <button
             style={s.joinCodeChip}
             onClick={() => {
@@ -133,7 +136,10 @@ export default function GameSession() {
             {codeCopied ? '✓ Copied' : game.game_code}
           </button>
         )}
-<button onClick={() => navigate(`/report/${game.share_token}`)} style={s.reportBtn}>
+        <button
+          onClick={() => isPro ? navigate(`/report/${game.share_token}`) : navigate('/upgrade')}
+          style={s.reportBtn}
+        >
           Report
         </button>
       </div>

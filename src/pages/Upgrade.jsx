@@ -67,8 +67,8 @@ export default function Upgrade() {
           ))}
         </div>
 
-        <button onClick={() => navigate(-1)} style={s.guestBtn}>
-          Continue as guest (1 team limit)
+        <button onClick={() => navigate(-1)} style={s.backBtn}>
+          Maybe later
         </button>
       </div>
     </div>
@@ -123,7 +123,7 @@ const s = {
   featureRow: { display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' },
   check: { color: '#16a34a', fontWeight: '700', fontSize: '0.9rem', flexShrink: 0 },
   featureText: { fontSize: '0.875rem', color: '#374151' },
-  guestBtn: {
+  backBtn: {
     display: 'block', width: '100%', padding: '0.75rem',
     background: 'none', border: 'none', color: '#71717a',
     fontSize: '0.875rem', cursor: 'pointer', textAlign: 'center',

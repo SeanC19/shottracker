@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
 import rinkImg from '../assets/rink.png'
+import { getUserPlan } from '../utils/plan'
 
 const RESULT_COLORS = {
   goal: '#16a34a',
@@ -26,9 +27,11 @@ export default function Report() {
   const [players, setPlayers] = useState([])
   const [loading, setLoading] = useState(true)
   const [copied, setCopied] = useState(false)
+  const [isPro, setIsPro] = useState(false)
 
   useEffect(() => {
     fetchReport()
+    getUserPlan().then(plan => setIsPro(plan === 'pro'))
   }, [token])
 
   async function fetchReport() {
@@ -164,8 +167,8 @@ export default function Report() {
         </div>
       </div>
 
-      {/* Player breakdown */}
-      {activePlayers.length > 0 && (
+      {/* Player breakdown — Pro only */}
+      {isPro && activePlayers.length > 0 && (
         <div style={s.section}>
           <h2 style={s.sectionTitle}>Player Breakdown</h2>
           <div style={s.playerCards}>

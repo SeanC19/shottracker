@@ -44,7 +44,7 @@ export default function CreateTeam() {
     } else {
       await supabase.from('players').insert({
         team_id: data.id,
-        name: 'Guest',
+        name: 'Player',
         jersey_number: 1,
       })
       navigate(`/teams/${data.id}`)
