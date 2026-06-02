@@ -112,7 +112,6 @@ export default function GameSession() {
         <button onClick={() => navigate(`/teams/${game.team_id}`)} style={s.back}>←</button>
         <div style={s.headerInfo}>
           <span style={s.matchup}>{team?.name} vs {game.opponent}</span>
-          <span style={s.stats}>{shots.length} shots · {goalCount} goals · {onTargetCount} on target</span>
         </div>
         {game.game_code && (
           <button
@@ -175,6 +174,13 @@ export default function GameSession() {
             }} />
           )}
         </div>
+      </div>
+
+      {/* Stats */}
+      <div style={s.statsBar}>
+        <span style={s.statItem}><span style={s.statNum}>{shots.length}</span> shots</span>
+        <span style={s.statItem}><span style={{ ...s.statNum, color: '#16a34a' }}>{goalCount}</span> goals</span>
+        <span style={s.statItem}><span style={{ ...s.statNum, color: '#2563eb' }}>{onTargetCount}</span> on target</span>
       </div>
 
       {/* Legend */}
@@ -316,6 +322,12 @@ const s = {
     transform: 'translate(-50%, -50%)',
     pointerEvents: 'none',
   },
+  statsBar: {
+    display: 'flex', justifyContent: 'center', gap: '1.5rem',
+    padding: '0.4rem 1rem', backgroundColor: '#1a1a1a',
+  },
+  statItem: { fontSize: '0.78rem', color: '#888' },
+  statNum: { fontWeight: '700', color: '#fff', marginRight: '0.2rem' },
   legend: {
     display: 'flex', gap: '0.75rem', justifyContent: 'center',
     padding: '0.4rem', paddingBottom: 'calc(0.4rem + env(safe-area-inset-bottom, 0px))',
