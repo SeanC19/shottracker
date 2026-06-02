@@ -113,6 +113,7 @@ export default function GameSession() {
           <span style={s.matchup}>{team?.name} vs {game.opponent}</span>
           <span style={s.stats}>{shots.length} shots · {goalCount} goals · {onTargetCount} on target</span>
         </div>
+        <button onClick={() => navigate(`/games/${id}/edit`)} style={s.editBtn}>Edit</button>
         <button
           onClick={() => navigate(`/report/${game.share_token}`)}
           style={s.reportBtn}
@@ -272,6 +273,11 @@ const s = {
   headerInfo: { flex: 1, display: 'flex', flexDirection: 'column', gap: '0.1rem' },
   matchup: { fontSize: '0.9rem', fontWeight: '600', color: '#fff' },
   stats: { fontSize: '0.75rem', color: '#888' },
+  editBtn: {
+    padding: '0.35rem 0.75rem', background: 'none', color: '#aaa',
+    border: '1px solid #444', borderRadius: '6px', fontSize: '0.8rem',
+    cursor: 'pointer', flexShrink: 0,
+  },
   reportBtn: {
     padding: '0.35rem 0.75rem', backgroundColor: '#2563eb', color: '#fff',
     border: 'none', borderRadius: '6px', fontSize: '0.8rem',
