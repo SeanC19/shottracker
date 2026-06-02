@@ -95,8 +95,14 @@ export default function GameSession() {
     setSaving(false)
   }
 
-  function cancelShot() {
+  async function undoLastShot() {
     setPendingShot(null)
+    if (shots.length === 0) return
+    const lastShot = shots.reduce((latest, sh) =>
+      new Date(sh.created_at) > new Date(latest.created_at) ? sh : latest
+    , shots[0])
+    await supabase.from('shots').delete().eq('id', lastShot.id)
+    setShots(prev => prev.filter(sh => sh.id !== lastShot.id))
   }
 
   if (loading) return <div style={s.loading}>Loading...</div>
@@ -257,7 +263,7 @@ export default function GameSession() {
 
         {/* Actions — always visible */}
         <div style={s.actions}>
-          <button onClick={cancelShot} style={s.cancelBtn} disabled={!pendingShot}>Cancel</button>
+          <button onClick={undoLastShot} style={{ ...s.cancelBtn, opacity: (!pendingShot && shots.length === 0) ? 0.4 : 1 }} disabled={!pendingShot && shots.length === 0}>Undo</button>
           <button
             onClick={saveShot}
             style={{ ...s.saveBtn, opacity: (!pendingShot || !selectedPlayer) ? 0.5 : 1 }}
