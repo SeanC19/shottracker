@@ -257,7 +257,7 @@ export default function GameSession() {
 }
 
 const s = {
-  page: { minHeight: '100vh', backgroundColor: '#111', display: 'flex', flexDirection: 'column' },
+  page: { height: '100svh', backgroundColor: '#111', display: 'flex', flexDirection: 'column', overflow: 'hidden' },
   loading: { padding: '2rem', color: '#71717a' },
   header: {
     backgroundColor: '#1a1a1a', padding: '0.75rem 1rem',
@@ -303,7 +303,7 @@ const s = {
   legendDot: { width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0 },
   sheet: {
     backgroundColor: '#1a1a1a', borderTop: '1px solid #333',
-    padding: '0.75rem', paddingBottom: 'calc(1rem + env(safe-area-inset-bottom, 80px))',
+    padding: '0.75rem', paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))',
     display: 'flex', flexDirection: 'column', gap: '0.6rem',
   },
   typeRow: { display: 'flex', gap: '0.35rem', alignItems: 'center', flexWrap: 'wrap' },
