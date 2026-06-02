@@ -308,16 +308,16 @@ const s = {
     display: 'flex', flexDirection: 'column', gap: '0.6rem',
   },
   noShotPrompt: { textAlign: 'center', color: '#555', fontSize: '0.78rem', padding: '0.25rem 0' },
-  resultRow: { display: 'flex', gap: '0.4rem' },
+  resultRow: { display: 'flex', gap: '0.4rem', justifyContent: 'center', flexWrap: 'wrap' },
   resultBtn: {
-    flex: 1, padding: '0.5rem 0.25rem', borderRadius: '8px',
+    flex: 1, minWidth: '70px', padding: '0.5rem 0.25rem', borderRadius: '8px',
     border: 'none', fontSize: '0.78rem', fontWeight: '600', cursor: 'pointer',
   },
   playerGrid: {
-    display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))', gap: '0.4rem',
+    display: 'flex', flexWrap: 'wrap', gap: '0.4rem', justifyContent: 'center',
   },
   playerBtn: {
-    padding: '0.5rem 0.25rem', borderRadius: '8px', border: 'none',
+    width: '80px', padding: '0.5rem 0.25rem', borderRadius: '8px', border: 'none',
     cursor: 'pointer', display: 'flex', flexDirection: 'column',
     alignItems: 'center', gap: '0.1rem',
   },
