@@ -61,7 +61,7 @@ export default function CreateTeam() {
         <p style={styles.wallText}>
           Create a free account to manage more than one team and keep your data safe across devices.
         </p>
-        <button onClick={() => navigate('/signup')} style={styles.button}>Create Account</button>
+        <button onClick={() => navigate('/upgrade')} style={styles.button}>View Plans</button>
         <button onClick={() => navigate('/login')} style={styles.secondaryBtn}>Sign in to existing account</button>
       </div>
     </div>

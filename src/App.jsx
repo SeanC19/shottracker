@@ -10,6 +10,7 @@ import TeamDetail from './pages/TeamDetail'
 import CreateGame from './pages/CreateGame'
 import EditTeam from './pages/EditTeam'
 import EditGame from './pages/EditGame'
+import Upgrade from './pages/Upgrade'
 import GameSession from './pages/GameSession'
 import JoinGame from './pages/JoinGame'
 import Report from './pages/Report'
@@ -51,6 +52,7 @@ export default function App() {
         <Route path="/join" element={auth(<JoinGame />)} />
         <Route path="/report/:token" element={<Report />} />
         <Route path="/account" element={auth(<Account />)} />
+        <Route path="/upgrade" element={auth(<Upgrade />)} />
       </Routes>
       <TabBar />
     </BrowserRouter>

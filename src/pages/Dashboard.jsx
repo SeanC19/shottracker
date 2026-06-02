@@ -28,7 +28,7 @@ export default function Dashboard() {
 
   function handleNewTeam() {
     if (isAnonymous && teams.length >= 1) {
-      navigate('/signup')
+      navigate('/upgrade')
     } else {
       navigate('/teams/new')
     }
