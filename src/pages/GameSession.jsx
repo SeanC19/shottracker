@@ -79,20 +79,24 @@ export default function GameSession() {
     if (!pendingShot) return
     setSaving(true)
 
+    const shotData = {
+      game_id: id,
+      x_pct: pendingShot.x_pct,
+      y_pct: pendingShot.y_pct,
+      result: selectedResult.toLowerCase().replace(' ', '_'),
+    }
+    if (selectedPlayer) shotData.player_id = selectedPlayer.id
+    if (selectedType) shotData.shot_type = selectedType.toLowerCase()
+
     const { data, error } = await supabase
       .from('shots')
-      .insert({
-        game_id: id,
-        player_id: selectedPlayer?.id ?? null,
-        x_pct: pendingShot.x_pct,
-        y_pct: pendingShot.y_pct,
-        shot_type: selectedType ? selectedType.toLowerCase() : null,
-        result: selectedResult.toLowerCase().replace(' ', '_'),
-      })
+      .insert(shotData)
       .select('*, players(name, jersey_number)')
       .single()
 
-    if (!error) {
+    if (error) {
+      console.error('Shot save failed:', error.message)
+    } else {
       setShots(prev => [...prev, data])
       setPendingShot(null)
     }
