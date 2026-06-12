@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { supabase } from './supabase'
 import TabBar from './components/TabBar.jsx'
+import SaveAccountBanner from './components/SaveAccountBanner.jsx'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard'
@@ -19,9 +20,16 @@ export default function App() {
   const [session, setSession] = useState(undefined)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-    })
+    async function initSession() {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        setSession(session)
+      } else {
+        const { data } = await supabase.auth.signInAnonymously()
+        setSession(data.session)
+      }
+    }
+    initSession()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
@@ -32,12 +40,16 @@ export default function App() {
 
   if (session === undefined) return null
 
+  const isAnonymous = session?.user?.is_anonymous ?? false
+
   function auth(el) {
     if (session) return el
     return <Navigate to="/login" />
   }
+
+  // Anonymous users can visit login/signup to upgrade their account
   function guest(el) {
-    if (session) return <Navigate to="/" />
+    if (session && !isAnonymous) return <Navigate to="/" />
     return el
   }
 
@@ -57,6 +69,7 @@ export default function App() {
         <Route path="/report/:token" element={<Report />} />
         <Route path="/account" element={auth(<Account />)} />
       </Routes>
+      {isAnonymous && <SaveAccountBanner />}
       <TabBar />
     </BrowserRouter>
   )

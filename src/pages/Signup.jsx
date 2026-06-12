@@ -15,14 +15,26 @@ export default function Signup() {
     setLoading(true)
     setError(null)
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { display_name: displayName } },
-    })
+    const { data: { user } } = await supabase.auth.getUser()
+    let signupError
+    if (user?.is_anonymous) {
+      const { error } = await supabase.auth.updateUser({
+        email,
+        password,
+        data: { display_name: displayName },
+      })
+      signupError = error
+    } else {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { display_name: displayName } },
+      })
+      signupError = error
+    }
 
-    if (error) {
-      setError(error.message)
+    if (signupError) {
+      setError(signupError.message)
     } else {
       setSuccess(true)
     }
