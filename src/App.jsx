@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { supabase } from './supabase'
+import { getAnonId, setAnonId, clearAnonId } from './utils/anonId'
 import TabBar from './components/TabBar.jsx'
 import SaveAccountBanner from './components/SaveAccountBanner.jsx'
 import Login from './pages/Login'
@@ -26,13 +27,24 @@ export default function App() {
         setSession(session)
       } else {
         const { data } = await supabase.auth.signInAnonymously()
+        setAnonId(data.session.user.id)
         setSession(data.session)
       }
     }
     initSession()
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSession(session)
+      const becameAuthenticated = (event === 'SIGNED_IN' || event === 'USER_UPDATED')
+        && session
+        && !session.user.is_anonymous
+      if (becameAuthenticated) {
+        const anonId = getAnonId()
+        if (anonId) {
+          await supabase.rpc('claim_anonymous_data', { anon_id: anonId })
+          clearAnonId()
+        }
+      }
     })
 
     return () => subscription.unsubscribe()
