@@ -5,6 +5,7 @@ import { supabase } from '../supabase'
 export default function Dashboard() {
   const [teams, setTeams] = useState([])
   const [loading, setLoading] = useState(true)
+  const [isAnonymous, setIsAnonymous] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -13,6 +14,7 @@ export default function Dashboard() {
 
   async function fetchTeams() {
     const { data: { user } } = await supabase.auth.getUser()
+    setIsAnonymous(user?.is_anonymous ?? false)
 
     const { data, error } = await supabase
       .from('teams')
@@ -44,7 +46,9 @@ export default function Dashboard() {
     <div style={styles.container}>
       <div style={styles.header}>
         <h1 style={styles.title}>ShotMap</h1>
-        <button onClick={handleSignOut} style={styles.signOutBtn}>Sign out</button>
+        {!isAnonymous && (
+          <button onClick={handleSignOut} style={styles.signOutBtn}>Sign out</button>
+        )}
       </div>
 
       <div style={styles.content}>

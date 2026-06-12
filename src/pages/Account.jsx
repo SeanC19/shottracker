@@ -71,13 +71,15 @@ export default function Account() {
         {/* Profile card */}
         <div style={s.card}>
           <div style={s.avatar}>
-            {(profile?.display_name || email || '?')[0].toUpperCase()}
+            {isAnonymous ? 'G' : (profile?.display_name || email || '?')[0].toUpperCase()}
           </div>
           <div style={s.info}>
-            {profile?.display_name && (
+            {isAnonymous && <span style={s.name}>Guest</span>}
+            {!isAnonymous && profile?.display_name && (
               <span style={s.name}>{profile.display_name}</span>
             )}
-            <span style={s.email}>{email}</span>
+            {!isAnonymous && <span style={s.email}>{email}</span>}
+            {isAnonymous && <span style={s.email}>Temporary account</span>}
           </div>
         </div>
 
