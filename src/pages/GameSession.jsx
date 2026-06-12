@@ -76,17 +76,17 @@ export default function GameSession() {
   }
 
   async function saveShot() {
-    if (!pendingShot || !selectedPlayer) return
+    if (!pendingShot) return
     setSaving(true)
 
     const { data, error } = await supabase
       .from('shots')
       .insert({
         game_id: id,
-        player_id: selectedPlayer.id,
+        player_id: selectedPlayer?.id ?? null,
         x_pct: pendingShot.x_pct,
         y_pct: pendingShot.y_pct,
-        shot_type: selectedType.toLowerCase(),
+        shot_type: selectedType ? selectedType.toLowerCase() : null,
         result: selectedResult.toLowerCase().replace(' ', '_'),
       })
       .select('*, players(name, jersey_number)')
@@ -274,8 +274,8 @@ export default function GameSession() {
           <button onClick={undoLastShot} style={{ ...s.cancelBtn, opacity: (!pendingShot && shots.length === 0) ? 0.4 : 1 }} disabled={!pendingShot && shots.length === 0}>Undo</button>
           <button
             onClick={saveShot}
-            style={{ ...s.saveBtn, opacity: (!pendingShot || !selectedPlayer) ? 0.5 : 1 }}
-            disabled={!pendingShot || !selectedPlayer || saving}
+            style={{ ...s.saveBtn, opacity: pendingShot ? 1 : 0.5 }}
+            disabled={!pendingShot || saving}
           >
             {saving ? 'Saving...' : 'Log Shot'}
           </button>
