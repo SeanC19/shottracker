@@ -1,17 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
-import { getUserPlan } from '../utils/plan'
 
 export default function Dashboard() {
   const [teams, setTeams] = useState([])
   const [loading, setLoading] = useState(true)
-  const [isPro, setIsPro] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
     fetchTeams()
-    getUserPlan().then(plan => setIsPro(plan === 'pro'))
   }, [])
 
   async function fetchTeams() {
@@ -61,7 +58,7 @@ export default function Dashboard() {
         <div style={styles.sectionHeader}>
           <h2 style={styles.sectionTitle}>Your Teams</h2>
           <button onClick={() => navigate('/teams/new')} style={styles.newBtn}>
-            {!isPro && teams.length >= 1 ? '🔒 New Team' : '+ New Team'}
+            + New Team
           </button>
         </div>
 

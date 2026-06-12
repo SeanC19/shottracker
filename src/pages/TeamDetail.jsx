@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../supabase'
-import { getUserPlan } from '../utils/plan'
 
 export default function TeamDetail() {
   const { id } = useParams()
@@ -13,7 +12,6 @@ export default function TeamDetail() {
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [tab, setTab] = useState('games')
-  const [isPro, setIsPro] = useState(false)
 
   const [playerName, setPlayerName] = useState('')
   const [jerseyNumber, setJerseyNumber] = useState('')
@@ -28,7 +26,6 @@ export default function TeamDetail() {
 
   useEffect(() => {
     fetchAll()
-    getUserPlan().then(plan => setIsPro(plan === 'pro'))
   }, [id])
 
   async function fetchAll() {
@@ -270,10 +267,10 @@ export default function TeamDetail() {
                   </div>
                   {game.game_code && (
                     <button
-                      style={{ ...styles.gameCode, ...(isPro ? {} : styles.gameCodeLocked) }}
-                      onClick={e => { e.stopPropagation(); if (!isPro) navigate('/upgrade') }}
+                      style={styles.gameCode}
+                      onClick={e => e.stopPropagation()}
                     >
-                      {isPro ? game.game_code : '🔒 Code'}
+                      {game.game_code}
                     </button>
                   )}
                   <button
@@ -375,5 +372,4 @@ const styles = {
     borderRadius: '5px', letterSpacing: '0.05em', flexShrink: 0,
     border: 'none', cursor: 'default',
   },
-  gameCodeLocked: { cursor: 'pointer', opacity: 0.7 },
 }

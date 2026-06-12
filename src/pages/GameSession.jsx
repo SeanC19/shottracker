@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { getUserPlan } from '../utils/plan'
 import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../supabase'
 import rinkImg from '../assets/rink.png'
@@ -47,11 +46,9 @@ export default function GameSession() {
   const [selectedType, setSelectedType] = useState('Wrist')
   const [saving, setSaving] = useState(false)
   const [codeCopied, setCodeCopied] = useState(false)
-  const [isPro, setIsPro] = useState(false)
 
   useEffect(() => {
     fetchAll()
-    getUserPlan().then(plan => setIsPro(plan === 'pro'))
   }, [id])
 
   async function fetchAll() {
@@ -120,8 +117,7 @@ export default function GameSession() {
   const missedCount = shots.filter(sh => sh.result === 'missed').length
   const blockedCount = shots.filter(sh => sh.result === 'blocked').length
 
-  const proCodeLabel = codeCopied ? '✓ Copied' : game.game_code
-  const codeLabel = isPro ? proCodeLabel : '🔒 Code'
+  const codeLabel = codeCopied ? '✓ Copied' : game.game_code
 
   return (
     <div style={s.page}>
@@ -133,9 +129,8 @@ export default function GameSession() {
         </div>
         {game.game_code && (
           <button
-            style={{ ...s.joinCodeChip, ...(isPro ? {} : s.locked) }}
+            style={s.joinCodeChip}
             onClick={() => {
-              if (!isPro) { navigate('/upgrade'); return }
               navigator.clipboard.writeText(game.game_code)
               setCodeCopied(true)
               setTimeout(() => setCodeCopied(false), 2000)
@@ -145,10 +140,10 @@ export default function GameSession() {
           </button>
         )}
         <button
-          onClick={() => isPro ? navigate(`/report/${game.share_token}`) : navigate('/upgrade')}
-          style={{ ...s.reportBtn, ...(!isPro && s.locked) }}
+          onClick={() => navigate(`/report/${game.share_token}`)}
+          style={s.reportBtn}
         >
-          {isPro ? 'Report' : '🔒 Report'}
+          Report
         </button>
       </div>
 
@@ -300,7 +295,6 @@ export default function GameSession() {
 const s = {
   page: { height: '100svh', backgroundColor: '#111', display: 'flex', flexDirection: 'column', overflow: 'hidden' },
   loading: { padding: '2rem', color: '#71717a' },
-  locked: { opacity: 0.6, cursor: 'pointer' },
   header: {
     backgroundColor: '#1a1a1a', padding: '0.75rem 1rem',
     display: 'flex', alignItems: 'center', gap: '0.75rem',

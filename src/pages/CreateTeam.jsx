@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
 import { generateJoinCode } from '../utils/joinCode'
@@ -11,18 +11,6 @@ export default function CreateTeam() {
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
-
-  useEffect(() => {
-    async function checkLimit() {
-      const { data: { user } } = await supabase.auth.getUser()
-      const { count } = await supabase
-        .from('teams')
-        .select('id', { count: 'exact', head: true })
-        .eq('owner_id', user.id)
-      if (count >= 1) navigate('/upgrade', { replace: true })
-    }
-    checkLimit()
-  }, [])
 
   async function handleSubmit(e) {
     e.preventDefault()

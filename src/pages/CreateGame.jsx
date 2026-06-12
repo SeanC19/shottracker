@@ -1,10 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../supabase'
 import { generateJoinCode } from '../utils/joinCode'
-import { getUserPlan } from '../utils/plan'
-
-const FREE_GAME_LIMIT = 3
 
 export default function CreateGame() {
   const { teamId } = useParams()
@@ -15,19 +12,6 @@ export default function CreateGame() {
   const [gameDate, setGameDate] = useState(new Date().toISOString().split('T')[0])
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    async function checkLimit() {
-      const plan = await getUserPlan()
-      if (plan === 'pro') return
-      const { count } = await supabase
-        .from('games')
-        .select('id', { count: 'exact', head: true })
-        .eq('team_id', teamId)
-      if (count >= FREE_GAME_LIMIT) navigate('/upgrade', { replace: true })
-    }
-    checkLimit()
-  }, [teamId, navigate])
 
   async function handleSubmit(e) {
     e.preventDefault()
