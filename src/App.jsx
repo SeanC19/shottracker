@@ -24,6 +24,7 @@ export default function App() {
     async function initSession() {
       const { data: { session } } = await supabase.auth.getSession()
       if (session) {
+        if (session.user.is_anonymous) setAnonId(session.user.id)
         setSession(session)
       } else {
         const { data } = await supabase.auth.signInAnonymously()
@@ -34,7 +35,6 @@ export default function App() {
     initSession()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setSession(session)
       const becameAuthenticated = (event === 'SIGNED_IN' || event === 'USER_UPDATED')
         && session
         && !session.user.is_anonymous
@@ -45,6 +45,8 @@ export default function App() {
           clearAnonId()
         }
       }
+      // Set session after claim so dashboard mounts with data already transferred
+      setSession(session)
     })
 
     return () => subscription.unsubscribe()
