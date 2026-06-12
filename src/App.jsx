@@ -32,8 +32,14 @@ export default function App() {
 
   if (session === undefined) return null
 
-  const auth = (el) => session ? el : <Navigate to="/login" />
-  const guest = (el) => session ? <Navigate to="/" /> : el
+  function auth(el) {
+    if (session) return el
+    return <Navigate to="/login" />
+  }
+  function guest(el) {
+    if (session) return <Navigate to="/" />
+    return el
+  }
 
   return (
     <BrowserRouter>

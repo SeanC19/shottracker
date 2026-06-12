@@ -62,7 +62,8 @@ export default function EditTeam() {
           {error && <p style={styles.error}>{error}</p>}
 
           <button type="submit" style={styles.button} disabled={loading}>
-            {loading ? 'Saving...' : 'Save Changes'}
+            {loading && 'Saving...'}
+            {!loading && 'Save Changes'}
           </button>
         </form>
       </div>

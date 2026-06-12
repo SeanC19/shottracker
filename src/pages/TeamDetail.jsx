@@ -45,12 +45,15 @@ export default function TeamDetail() {
     setSaving(true)
     setError(null)
 
+    let parsedJersey = null
+    if (jerseyNumber) parsedJersey = Number.parseInt(jerseyNumber)
+
     const { data, error } = await supabase
       .from('players')
       .insert({
         team_id: id,
         name: playerName,
-        jersey_number: jerseyNumber ? Number.parseInt(jerseyNumber) : null,
+        jersey_number: parsedJersey,
         position: position || null,
       })
       .select()
@@ -91,11 +94,14 @@ export default function TeamDetail() {
 
   async function saveEditPlayer(e, playerId) {
     e.preventDefault()
+    let parsedEditJersey = null
+    if (editJersey) parsedEditJersey = Number.parseInt(editJersey)
+
     const { data, error } = await supabase
       .from('players')
       .update({
         name: editName,
-        jersey_number: editJersey ? Number.parseInt(editJersey) : null,
+        jersey_number: parsedEditJersey,
         position: editPosition || null,
       })
       .eq('id', playerId)
@@ -104,8 +110,10 @@ export default function TeamDetail() {
 
     if (!error) {
       setPlayers(prev =>
-        prev.map(p => p.id === playerId ? data : p)
-          .sort((a, b) => a.jersey_number - b.jersey_number)
+        prev.map(p => {
+          if (p.id === playerId) return data
+          return p
+        }).sort((a, b) => a.jersey_number - b.jersey_number)
       )
       setEditingPlayerId(null)
     }
@@ -113,6 +121,18 @@ export default function TeamDetail() {
 
   if (loading) return <div style={styles.loading}>Loading...</div>
   if (!team) return <div style={styles.loading}>Team not found.</div>
+
+  let rosterTabStyle = styles.tab
+  if (tab === 'roster') rosterTabStyle = { ...styles.tab, ...styles.tabActive }
+
+  let gamesTabStyle = styles.tab
+  if (tab === 'games') gamesTabStyle = { ...styles.tab, ...styles.tabActive }
+
+  let addPlayerLabel = '+ Add Player'
+  if (showForm) addPlayerLabel = 'Cancel'
+
+  let addBtnLabel = 'Add'
+  if (saving) addBtnLabel = '...'
 
   return (
     <div style={styles.container}>
@@ -124,16 +144,10 @@ export default function TeamDetail() {
       <div style={styles.content}>
         {/* Tabs */}
         <div style={styles.tabs}>
-          <button
-            style={{ ...styles.tab, ...(tab === 'roster' ? styles.tabActive : {}) }}
-            onClick={() => setTab('roster')}
-          >
+          <button style={rosterTabStyle} onClick={() => setTab('roster')}>
             Roster ({players.length})
           </button>
-          <button
-            style={{ ...styles.tab, ...(tab === 'games' ? styles.tabActive : {}) }}
-            onClick={() => setTab('games')}
-          >
+          <button style={gamesTabStyle} onClick={() => setTab('games')}>
             Games ({games.length})
           </button>
         </div>
@@ -144,7 +158,7 @@ export default function TeamDetail() {
             <div style={styles.sectionHeader}>
               <h2 style={styles.sectionTitle}>Players</h2>
               <button onClick={() => setShowForm(!showForm)} style={styles.addBtn}>
-                {showForm ? 'Cancel' : '+ Add Player'}
+                {addPlayerLabel}
               </button>
             </div>
 
@@ -174,7 +188,7 @@ export default function TeamDetail() {
                     style={{ ...styles.input, width: '100px', flex: 'none' }}
                   />
                   <button type="submit" style={styles.saveBtn} disabled={saving}>
-                    {saving ? '...' : 'Add'}
+                    {addBtnLabel}
                   </button>
                 </div>
                 {error && <p style={styles.error}>{error}</p>}
@@ -186,40 +200,43 @@ export default function TeamDetail() {
             )}
 
             <div style={styles.playerList}>
-              {players.map(player => (
-                editingPlayerId === player.id ? (
-                  <form
-                    key={player.id}
-                    onSubmit={e => saveEditPlayer(e, player.id)}
-                    style={styles.form}
-                  >
-                    <div style={styles.formRow}>
-                      <input
-                        type="text"
-                        value={editName}
-                        onChange={e => setEditName(e.target.value)}
-                        style={styles.input}
-                        required
-                      />
-                      <input
-                        type="number"
-                        placeholder="#"
-                        value={editJersey}
-                        onChange={e => setEditJersey(e.target.value)}
-                        style={{ ...styles.input, width: '70px', flex: 'none' }}
-                      />
-                      <input
-                        type="text"
-                        placeholder="Position"
-                        value={editPosition}
-                        onChange={e => setEditPosition(e.target.value)}
-                        style={{ ...styles.input, width: '100px', flex: 'none' }}
-                      />
-                      <button type="submit" style={styles.saveBtn}>Save</button>
-                      <button type="button" onClick={cancelEditPlayer} style={styles.cancelEditBtn}>✕</button>
-                    </div>
-                  </form>
-                ) : (
+              {players.map(player => {
+                if (editingPlayerId === player.id) {
+                  return (
+                    <form
+                      key={player.id}
+                      onSubmit={e => saveEditPlayer(e, player.id)}
+                      style={styles.form}
+                    >
+                      <div style={styles.formRow}>
+                        <input
+                          type="text"
+                          value={editName}
+                          onChange={e => setEditName(e.target.value)}
+                          style={styles.input}
+                          required
+                        />
+                        <input
+                          type="number"
+                          placeholder="#"
+                          value={editJersey}
+                          onChange={e => setEditJersey(e.target.value)}
+                          style={{ ...styles.input, width: '70px', flex: 'none' }}
+                        />
+                        <input
+                          type="text"
+                          placeholder="Position"
+                          value={editPosition}
+                          onChange={e => setEditPosition(e.target.value)}
+                          style={{ ...styles.input, width: '100px', flex: 'none' }}
+                        />
+                        <button type="submit" style={styles.saveBtn}>Save</button>
+                        <button type="button" onClick={cancelEditPlayer} style={styles.cancelEditBtn}>✕</button>
+                      </div>
+                    </form>
+                  )
+                }
+                return (
                   <div key={player.id} style={styles.playerRow}>
                     <div style={styles.jersey}>{player.jersey_number ?? '—'}</div>
                     <div style={styles.playerInfo}>
@@ -230,7 +247,7 @@ export default function TeamDetail() {
                     <button onClick={() => removePlayer(player.id)} style={styles.removeBtn}>Remove</button>
                   </div>
                 )
-              ))}
+              })}
             </div>
           </>
         )}

@@ -82,7 +82,8 @@ export default function CreateGame() {
           {error && <p style={styles.error}>{error}</p>}
 
           <button type="submit" style={styles.button} disabled={loading}>
-            {loading ? 'Starting...' : 'Start Game'}
+            {loading && 'Starting...'}
+            {!loading && 'Start Game'}
           </button>
         </form>
       </div>

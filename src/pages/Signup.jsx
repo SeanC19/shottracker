@@ -92,7 +92,8 @@ export default function Signup() {
           {error && <p style={styles.error}>{error}</p>}
 
           <button type="submit" style={styles.button} disabled={loading}>
-            {loading ? 'Creating account...' : 'Create account'}
+            {loading && 'Creating account...'}
+            {!loading && 'Create account'}
           </button>
         </form>
 

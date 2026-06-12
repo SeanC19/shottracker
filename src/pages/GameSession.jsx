@@ -108,9 +108,10 @@ export default function GameSession() {
   async function undoLastShot() {
     setPendingShot(null)
     if (shots.length === 0) return
-    const lastShot = shots.reduce((latest, sh) =>
-      new Date(sh.created_at) > new Date(latest.created_at) ? sh : latest
-    , shots[0])
+    const lastShot = shots.reduce((latest, sh) => {
+      if (new Date(sh.created_at) > new Date(latest.created_at)) return sh
+      return latest
+    }, shots[0])
     await supabase.from('shots').delete().eq('id', lastShot.id)
     setShots(prev => prev.filter(sh => sh.id !== lastShot.id))
   }
@@ -123,7 +124,17 @@ export default function GameSession() {
   const missedCount = shots.filter(sh => sh.result === 'missed').length
   const blockedCount = shots.filter(sh => sh.result === 'blocked').length
 
-  const codeLabel = codeCopied ? '✓ Copied' : game.game_code
+  let codeLabel = game.game_code
+  if (codeCopied) codeLabel = '✓ Copied'
+
+  let logShotLabel = 'Log Shot'
+  if (saving) logShotLabel = 'Saving...'
+
+  let undoOpacity = 1
+  if (!pendingShot && shots.length === 0) undoOpacity = 0.4
+
+  let saveOpacity = 0.5
+  if (pendingShot) saveOpacity = 1
 
   return (
     <div style={s.page}>
@@ -166,21 +177,29 @@ export default function GameSession() {
           <img src={FIELD_IMAGES[team?.sport] ?? rinkImg} alt="field" style={{ width: "100%", display: "block" }} draggable={false} />
 
           {/* Logged shots */}
-          {shots.map(shot => (
-            <div
-              key={shot.id}
-              style={{
-                ...s.dot,
-                left: `${shot.x_pct * 100}%`,
-                top: `${shot.y_pct * 100}%`,
-                backgroundColor: getResultColor(shot.result),
-                border: shot.result === 'goal' ? '2px solid #fff' : '1.5px solid rgba(255,255,255,0.5)',
-                width: shot.result === 'goal' ? '14px' : '10px',
-                height: shot.result === 'goal' ? '14px' : '10px',
-              }}
-              title={`${shot.players?.name} – ${shot.result}`}
-            />
-          ))}
+          {shots.map(shot => {
+            let dotBorder = '1.5px solid rgba(255,255,255,0.5)'
+            let dotSize = '10px'
+            if (shot.result === 'goal') {
+              dotBorder = '2px solid #fff'
+              dotSize = '14px'
+            }
+            return (
+              <div
+                key={shot.id}
+                style={{
+                  ...s.dot,
+                  left: `${shot.x_pct * 100}%`,
+                  top: `${shot.y_pct * 100}%`,
+                  backgroundColor: getResultColor(shot.result),
+                  border: dotBorder,
+                  width: dotSize,
+                  height: dotSize,
+                }}
+                title={`${shot.players?.name} – ${shot.result}`}
+              />
+            )
+          })}
 
           {/* Pending shot marker */}
           {pendingShot && (
@@ -225,67 +244,100 @@ export default function GameSession() {
 
         {/* Shot type row */}
         <div style={s.playerGrid}>
-          {SHOT_TYPES.map(t => (
-            <button
-              key={t}
-              style={{
-                ...s.playerBtn,
-                backgroundColor: selectedType === t ? '#2563eb' : '#f4f4f5',
-                color: selectedType === t ? '#fff' : '#111',
-              }}
-              onClick={() => setSelectedType(prev => prev === t ? null : t)}
-            >
-              <span style={s.playerNameBtn}>{t}</span>
-            </button>
-          ))}
+          {SHOT_TYPES.map(t => {
+            let typeBg = '#f4f4f5'
+            let typeColor = '#111'
+            if (selectedType === t) {
+              typeBg = '#2563eb'
+              typeColor = '#fff'
+            }
+            return (
+              <button
+                key={t}
+                style={{ ...s.playerBtn, backgroundColor: typeBg, color: typeColor }}
+                onClick={() => {
+                  setSelectedType(prev => {
+                    if (prev === t) return null
+                    return t
+                  })
+                }}
+              >
+                <span style={s.playerNameBtn}>{t}</span>
+              </button>
+            )
+          })}
         </div>
 
         {/* Result row */}
         <div style={s.resultRow}>
-          {RESULTS.map(r => (
-            <button
-              key={r}
-              style={{
-                ...s.resultBtn,
-                backgroundColor: selectedResult === r ? RESULT_COLORS[r] : '#f4f4f5',
-                color: selectedResult === r ? '#fff' : '#374151',
-              }}
-              onClick={() => setSelectedResult(prev => prev === r ? null : r)}
-            >
-              {r}
-            </button>
-          ))}
+          {RESULTS.map(r => {
+            let resultBg = '#f4f4f5'
+            let resultColor = '#374151'
+            if (selectedResult === r) {
+              resultBg = RESULT_COLORS[r]
+              resultColor = '#fff'
+            }
+            return (
+              <button
+                key={r}
+                style={{ ...s.resultBtn, backgroundColor: resultBg, color: resultColor }}
+                onClick={() => {
+                  setSelectedResult(prev => {
+                    if (prev === r) return null
+                    return r
+                  })
+                }}
+              >
+                {r}
+              </button>
+            )
+          })}
         </div>
 
         {/* Player grid */}
         <div style={s.playerGrid}>
-          {players.map(p => (
-            <button
-              key={p.id}
-              style={{
-                ...s.playerBtn,
-                backgroundColor: selectedPlayer?.id === p.id ? '#2563eb' : '#f4f4f5',
-                color: selectedPlayer?.id === p.id ? '#fff' : '#111',
-              }}
-              onClick={() => setSelectedPlayer(prev => prev?.id === p.id ? null : p)}
-            >
-              <span style={s.playerNum}>#{p.jersey_number ?? '—'}</span>
-              <span style={s.playerNameBtn}>{p.name.split(' ')[0]}</span>
-            </button>
-          ))}
+          {players.map(p => {
+            let playerBg = '#f4f4f5'
+            let playerColor = '#111'
+            if (selectedPlayer?.id === p.id) {
+              playerBg = '#2563eb'
+              playerColor = '#fff'
+            }
+            return (
+              <button
+                key={p.id}
+                style={{ ...s.playerBtn, backgroundColor: playerBg, color: playerColor }}
+                onClick={() => {
+                  setSelectedPlayer(prev => {
+                    if (prev?.id === p.id) return null
+                    return p
+                  })
+                }}
+              >
+                <span style={s.playerNum}>#{p.jersey_number ?? '—'}</span>
+                <span style={s.playerNameBtn}>{p.name.split(' ')[0]}</span>
+              </button>
+            )
+          })}
         </div>
 
         {saveError && <p style={s.saveErrorText}>{saveError}</p>}
 
         {/* Actions — always visible */}
         <div style={s.actions}>
-          <button onClick={undoLastShot} style={{ ...s.cancelBtn, opacity: (!pendingShot && shots.length === 0) ? 0.4 : 1 }} disabled={!pendingShot && shots.length === 0}>Undo</button>
+          <button
+            onClick={undoLastShot}
+            style={{ ...s.cancelBtn, opacity: undoOpacity }}
+            disabled={!pendingShot && shots.length === 0}
+          >
+            Undo
+          </button>
           <button
             onClick={saveShot}
-            style={{ ...s.saveBtn, opacity: pendingShot ? 1 : 0.5 }}
+            style={{ ...s.saveBtn, opacity: saveOpacity }}
             disabled={!pendingShot || saving}
           >
-            {saving ? 'Saving...' : 'Log Shot'}
+            {logShotLabel}
           </button>
         </div>
       </div>

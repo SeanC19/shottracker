@@ -3,6 +3,10 @@ import { supabase } from '../supabase'
 
 const CATEGORIES = ['General', 'Bug Report', 'Feature Request']
 
+async function handleSignOut() {
+  await supabase.auth.signOut()
+}
+
 export default function Account() {
   const [profile, setProfile] = useState(null)
   const [email, setEmail] = useState('')
@@ -30,10 +34,6 @@ export default function Account() {
       .eq('id', user.id)
       .single()
     setProfile(data)
-  }
-
-  async function handleSignOut() {
-    await supabase.auth.signOut()
   }
 
   async function handleFeedback(e) {
@@ -83,27 +83,37 @@ export default function Account() {
         <div style={s.feedbackCard}>
           <h2 style={s.feedbackTitle}>Share Feedback</h2>
 
-          {submitted ? (
+          {submitted && (
             <div style={s.successBox}>
               <p style={s.successText}>Thanks for your feedback!</p>
               <button style={s.resetBtn} onClick={() => setSubmitted(false)}>Submit another</button>
             </div>
-          ) : (
+          )}
+          {!submitted && (
             <form onSubmit={handleFeedback} style={s.form}>
               {/* Rating */}
               <div style={s.fieldGroup}>
                 <label htmlFor="rating" style={s.label}>Rating</label>
                 <div id="rating" style={s.stars}>
-                  {[1, 2, 3, 4, 5].map(n => (
-                    <button
-                      key={n}
-                      type="button"
-                      style={{ ...s.star, color: rating >= n ? '#f59e0b' : '#d1d5db' }}
-                      onClick={() => setRating(prev => prev === n ? null : n)}
-                    >
-                      ★
-                    </button>
-                  ))}
+                  {[1, 2, 3, 4, 5].map(n => {
+                    let starColor = '#d1d5db'
+                    if (rating >= n) starColor = '#f59e0b'
+                    return (
+                      <button
+                        key={n}
+                        type="button"
+                        style={{ ...s.star, color: starColor }}
+                        onClick={() => {
+                          setRating(prev => {
+                            if (prev === n) return null
+                            return n
+                          })
+                        }}
+                      >
+                        ★
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
 
@@ -111,20 +121,28 @@ export default function Account() {
               <div style={s.fieldGroup}>
                 <label htmlFor="category" style={s.label}>Category</label>
                 <div id="category" style={s.categoryRow}>
-                  {CATEGORIES.map(c => (
-                    <button
-                      key={c}
-                      type="button"
-                      style={{
-                        ...s.categoryBtn,
-                        backgroundColor: category === c ? '#2563eb' : '#f4f4f5',
-                        color: category === c ? '#fff' : '#374151',
-                      }}
-                      onClick={() => setCategory(c)}
-                    >
-                      {c}
-                    </button>
-                  ))}
+                  {CATEGORIES.map(c => {
+                    let btnBg = '#f4f4f5'
+                    let btnColor = '#374151'
+                    if (category === c) {
+                      btnBg = '#2563eb'
+                      btnColor = '#fff'
+                    }
+                    return (
+                      <button
+                        key={c}
+                        type="button"
+                        style={{
+                          ...s.categoryBtn,
+                          backgroundColor: btnBg,
+                          color: btnColor,
+                        }}
+                        onClick={() => setCategory(c)}
+                      >
+                        {c}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
 
@@ -145,7 +163,8 @@ export default function Account() {
               {feedbackError && <p style={s.error}>{feedbackError}</p>}
 
               <button type="submit" style={s.submitBtn} disabled={submitting}>
-                {submitting ? 'Sending...' : 'Send Feedback'}
+                {submitting && 'Sending...'}
+                {!submitting && 'Send Feedback'}
               </button>
             </form>
           )}

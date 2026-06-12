@@ -48,7 +48,8 @@ export default function JoinGame() {
           {error && <p style={styles.error}>{error}</p>}
 
           <button type="submit" style={styles.button} disabled={loading}>
-            {loading ? 'Finding game...' : 'Join Game'}
+            {loading && 'Finding game...'}
+            {!loading && 'Join Game'}
           </button>
         </form>
 

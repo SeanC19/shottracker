@@ -76,7 +76,8 @@ export default function CreateTeam() {
           {error && <p style={styles.error}>{error}</p>}
 
           <button type="submit" style={styles.button} disabled={loading}>
-            {loading ? 'Creating...' : 'Create Team'}
+            {loading && 'Creating...'}
+            {!loading && 'Create Team'}
           </button>
         </form>
       </div>

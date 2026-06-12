@@ -68,7 +68,8 @@ export default function Report() {
     const goals = playerShots.filter(s => s.result === 'goal').length
     const onTarget = playerShots.filter(s => s.result === 'on_target').length
     const total = playerShots.length
-    const shootingPct = total > 0 ? Math.round((goals / total) * 100) : 0
+    let shootingPct = 0
+    if (total > 0) shootingPct = Math.round((goals / total) * 100)
     return { total, goals, onTarget, shootingPct, shots: playerShots }
   }
 
@@ -86,7 +87,11 @@ export default function Report() {
 
   const totalGoals = shots.filter(s => s.result === 'goal').length
   const totalOnTarget = shots.filter(s => s.result === 'on_target').length
-  const shootingPct = shots.length > 0 ? Math.round((totalGoals / shots.length) * 100) : 0
+  let shootingPct = 0
+  if (shots.length > 0) shootingPct = Math.round((totalGoals / shots.length) * 100)
+
+  let shareBtnLabel = 'Share Link'
+  if (copied) shareBtnLabel = '✓ Copied!'
 
   const activePlayers = players.filter(p => getPlayerStats(p.id).total > 0)
     .sort((a, b) => getPlayerStats(b.id).total - getPlayerStats(a.id).total)
@@ -101,7 +106,7 @@ export default function Report() {
             <span style={s.appName}>ShotMap</span>
           </div>
           <button onClick={copyLink} style={s.shareBtn}>
-            {copied ? '✓ Copied!' : 'Share Link'}
+            {shareBtnLabel}
           </button>
         </div>
         <h1 style={s.matchup}>{team?.name} vs {game.opponent}</h1>
@@ -109,7 +114,7 @@ export default function Report() {
           {new Date(game.game_date).toLocaleDateString('en-US', {
             weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
           })}
-          {game.location ? ` · ${game.location}` : ''}
+          {game.location && ` · ${game.location}`}
         </p>
       </div>
 
@@ -139,21 +144,31 @@ export default function Report() {
         <div style={s.rinkWrap}>
           <div style={s.rinkContainer}>
             <img src={FIELD_IMAGES[team?.sport] ?? rinkImg} alt="field" style={{ width: "100%", display: "block" }} draggable={false} />
-            {shots.map(shot => (
-              <div
-                key={shot.id}
-                style={{
-                  ...s.dot,
-                  left: `${shot.x_pct * 100}%`,
-                  top: `${shot.y_pct * 100}%`,
-                  backgroundColor: RESULT_COLORS[shot.result] || '#9ca3af',
-                  width: shot.result === 'goal' ? '14px' : '10px',
-                  height: shot.result === 'goal' ? '14px' : '10px',
-                  border: shot.result === 'goal' ? '2px solid #fff' : '1.5px solid rgba(255,255,255,0.6)',
-                  zIndex: shot.result === 'goal' ? 2 : 1,
-                }}
-              />
-            ))}
+            {shots.map(shot => {
+              let dotSize = '10px'
+              let dotBorder = '1.5px solid rgba(255,255,255,0.6)'
+              let dotZIndex = 1
+              if (shot.result === 'goal') {
+                dotSize = '14px'
+                dotBorder = '2px solid #fff'
+                dotZIndex = 2
+              }
+              return (
+                <div
+                  key={shot.id}
+                  style={{
+                    ...s.dot,
+                    left: `${shot.x_pct * 100}%`,
+                    top: `${shot.y_pct * 100}%`,
+                    backgroundColor: RESULT_COLORS[shot.result] || '#9ca3af',
+                    width: dotSize,
+                    height: dotSize,
+                    border: dotBorder,
+                    zIndex: dotZIndex,
+                  }}
+                />
+              )
+            })}
           </div>
         </div>
 
@@ -208,20 +223,24 @@ export default function Report() {
                   <div style={s.miniRinkWrap}>
                     <div style={s.miniRink}>
                       <img src={FIELD_IMAGES[team?.sport] ?? rinkImg} alt="field" style={{ width: "100%", display: "block" }} draggable={false} />
-                      {stats.shots.map(shot => (
-                        <div
-                          key={shot.id}
-                          style={{
-                            ...s.dot,
-                            left: `${shot.x_pct * 100}%`,
-                            top: `${shot.y_pct * 100}%`,
-                            backgroundColor: RESULT_COLORS[shot.result] || '#9ca3af',
-                            width: shot.result === 'goal' ? '10px' : '7px',
-                            height: shot.result === 'goal' ? '10px' : '7px',
-                            border: '1px solid rgba(255,255,255,0.7)',
-                          }}
-                        />
-                      ))}
+                      {stats.shots.map(shot => {
+                        let miniDotSize = '7px'
+                        if (shot.result === 'goal') miniDotSize = '10px'
+                        return (
+                          <div
+                            key={shot.id}
+                            style={{
+                              ...s.dot,
+                              left: `${shot.x_pct * 100}%`,
+                              top: `${shot.y_pct * 100}%`,
+                              backgroundColor: RESULT_COLORS[shot.result] || '#9ca3af',
+                              width: miniDotSize,
+                              height: miniDotSize,
+                              border: '1px solid rgba(255,255,255,0.7)',
+                            }}
+                          />
+                        )
+                      })}
                     </div>
                   </div>
                 </div>
