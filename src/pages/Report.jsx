@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import QRCode from 'qrcode'
 import { supabase } from '../supabase'
 import rinkImg from '../assets/rink.png'
 import soccerImg from '../assets/Soccer.svg'
@@ -24,12 +25,15 @@ const RESULT_LABELS = {
 export default function Report() {
   const { token } = useParams()
   const navigate = useNavigate()
+  const qrDialogRef = useRef(null)
+
   const [game, setGame] = useState(null)
   const [team, setTeam] = useState(null)
   const [shots, setShots] = useState([])
   const [players, setPlayers] = useState([])
   const [loading, setLoading] = useState(true)
   const [copied, setCopied] = useState(false)
+  const [qrDataUrl, setQrDataUrl] = useState(null)
 
   useEffect(() => {
     fetchReport()
@@ -61,6 +65,18 @@ export default function Report() {
     navigator.clipboard.writeText(globalThis.location.href)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  async function openQR() {
+    if (!qrDataUrl) {
+      const url = await QRCode.toDataURL(globalThis.location.href, { width: 280, margin: 2 })
+      setQrDataUrl(url)
+    }
+    qrDialogRef.current.showModal()
+  }
+
+  function closeQR() {
+    qrDialogRef.current.close()
   }
 
   function getPlayerStats(playerId) {
@@ -105,9 +121,14 @@ export default function Report() {
             <button onClick={() => navigate(-1)} style={s.backBtn}>←</button>
             <span style={s.appName}>ShotMap</span>
           </div>
-          <button onClick={copyLink} style={s.shareBtn}>
-            {shareBtnLabel}
-          </button>
+          <div style={s.headerActions}>
+            <button onClick={copyLink} style={s.shareBtn}>
+              {shareBtnLabel}
+            </button>
+            <button onClick={openQR} style={s.qrBtn}>
+              QR
+            </button>
+          </div>
         </div>
         <h1 style={s.matchup}>{team?.name} vs {game.opponent}</h1>
         <p style={s.gameMeta}>
@@ -257,6 +278,13 @@ export default function Report() {
       <div style={s.footer}>
         <span style={s.footerText}>Powered by ShotMap</span>
       </div>
+
+      {/* QR code dialog */}
+      <dialog ref={qrDialogRef} style={s.qrDialog} onCancel={closeQR}>
+        <p style={s.qrTitle}>Scan to view report</p>
+        {qrDataUrl && <img src={qrDataUrl} alt="QR code for report link" style={s.qrImage} />}
+        <button onClick={closeQR} style={s.qrCloseBtn}>Close</button>
+      </dialog>
     </div>
   )
 }
@@ -268,6 +296,7 @@ const s = {
   header: { backgroundColor: '#111', color: '#fff', padding: '1.25rem 1.5rem' },
   headerTop: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' },
   headerLeft: { display: 'flex', alignItems: 'center', gap: '0.75rem' },
+  headerActions: { display: 'flex', gap: '0.5rem', alignItems: 'center' },
   backBtn: {
     background: 'none', border: 'none', color: '#fff',
     fontSize: '1.25rem', cursor: 'pointer', padding: '0 0.25rem',
@@ -276,6 +305,11 @@ const s = {
   shareBtn: {
     padding: '0.4rem 0.9rem', backgroundColor: '#2563eb', color: '#fff',
     border: 'none', borderRadius: '7px', fontSize: '0.8rem', fontWeight: '600', cursor: 'pointer',
+  },
+  qrBtn: {
+    padding: '0.4rem 0.75rem', backgroundColor: 'transparent', color: '#fff',
+    border: '1px solid #555', borderRadius: '7px', fontSize: '0.8rem',
+    fontWeight: '600', cursor: 'pointer',
   },
   matchup: { fontSize: '1.4rem', fontWeight: '700', margin: '0 0 0.3rem', color: '#fff' },
   gameMeta: { fontSize: '0.85rem', color: '#888', margin: 0 },
@@ -330,4 +364,16 @@ const s = {
   empty: { textAlign: 'center', color: '#71717a', padding: '3rem 1rem' },
   footer: { textAlign: 'center', padding: '1.5rem', marginTop: '1rem' },
   footerText: { fontSize: '0.78rem', color: '#aaa' },
+  qrDialog: {
+    border: 'none', borderRadius: '16px', padding: '1.5rem',
+    textAlign: 'center', maxWidth: '320px', width: '90%',
+    boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+  },
+  qrTitle: { fontSize: '1rem', fontWeight: '600', color: '#111', margin: '0 0 1rem' },
+  qrImage: { display: 'block', margin: '0 auto 1rem', borderRadius: '8px' },
+  qrCloseBtn: {
+    padding: '0.6rem 1.5rem', backgroundColor: '#2563eb', color: '#fff',
+    border: 'none', borderRadius: '8px', fontSize: '0.9rem',
+    fontWeight: '600', cursor: 'pointer',
+  },
 }
