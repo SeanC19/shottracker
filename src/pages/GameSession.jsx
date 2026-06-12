@@ -45,6 +45,7 @@ export default function GameSession() {
   const [selectedResult, setSelectedResult] = useState('On Target')
   const [selectedType, setSelectedType] = useState('Wrist')
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState(null)
   const [codeCopied, setCodeCopied] = useState(false)
 
   useEffect(() => {
@@ -95,8 +96,9 @@ export default function GameSession() {
       .single()
 
     if (error) {
-      console.error('Shot save failed:', error.message)
+      setSaveError(error.message)
     } else {
+      setSaveError(null)
       setShots(prev => [...prev, data])
       setPendingShot(null)
     }
@@ -273,6 +275,8 @@ export default function GameSession() {
           ))}
         </div>
 
+        {saveError && <p style={s.saveErrorText}>{saveError}</p>}
+
         {/* Actions — always visible */}
         <div style={s.actions}>
           <button onClick={undoLastShot} style={{ ...s.cancelBtn, opacity: (!pendingShot && shots.length === 0) ? 0.4 : 1 }} disabled={!pendingShot && shots.length === 0}>Undo</button>
@@ -358,6 +362,7 @@ const s = {
     display: 'flex', flexDirection: 'column', gap: '0.6rem',
   },
   noShotPrompt: { textAlign: 'center', color: '#555', fontSize: '0.78rem', padding: '0.25rem 0' },
+  saveErrorText: { textAlign: 'center', color: '#f87171', fontSize: '0.75rem', margin: 0 },
   resultRow: { display: 'flex', gap: '0.4rem', justifyContent: 'center', flexWrap: 'wrap' },
   resultBtn: {
     flex: 1, minWidth: '70px', padding: '0.5rem 0.25rem', borderRadius: '8px',
