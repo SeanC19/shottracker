@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Analytics } from '@vercel/analytics/react'
 import { supabase } from './supabase'
 import { getAnonId, setAnonId, clearAnonId } from './utils/anonId'
 import TabBar from './components/TabBar.jsx'
@@ -85,6 +86,7 @@ export default function App() {
       </Routes>
       {isAnonymous && <SaveAccountBanner />}
       <TabBar />
+      <Analytics />
     </BrowserRouter>
   )
 }
